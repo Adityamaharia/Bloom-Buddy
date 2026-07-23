@@ -19,7 +19,7 @@ BloomBuddy turns self-improvement into a visual and engaging experience:
 ---
 
 ## 🌐 Live Demo
-https://bloom-buddy-iota.vercel.app/
+https://bloom-buddy-ashy.vercel.app/
 
 ---
 
