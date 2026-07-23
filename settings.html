@@ -173,11 +173,7 @@
           <button class="btn-secondary" onclick="exportData()">
             Export My Data
           </button>
-          <button
-            class="btn-secondary"
-            onclick="logout()"
-            style="margin-top: 8px"
-          >
+          <button class="btn-secondary" onclick="logout()" style="margin-top: 8px">
             Log Out
           </button>
           <button
@@ -256,7 +252,10 @@
           container.style.backgroundColor = background;
         }
 
-        if (DataManager && typeof DataManager.updatePreferences === "function") {
+        if (
+          DataManager &&
+          typeof DataManager.updatePreferences === "function"
+        ) {
           DataManager.updatePreferences({ theme: nextTheme });
         }
       }

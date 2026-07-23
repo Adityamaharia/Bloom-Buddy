@@ -71,7 +71,7 @@
 
       <main class="dashboard-main">
         <!-- Plant Selection -->
-        <section>
+        <section class="custom-section">
           <h3>Choose Your Plant 🌱</h3>
           <div class="custom-grid">
             <div
@@ -119,37 +119,8 @@
           </div>
         </section>
 
-        <!-- Pot Selection -->
-        <section>
-          <h3>Choose Your Pot 🪴</h3>
-          <div class="custom-grid">
-            <div
-              class="custom-option selected"
-              onclick="changePot(event, 'classic', '🪴')"
-            >
-              <div style="font-size: 3rem">🪴</div>
-              <p>Classic</p>
-            </div>
-            <div class="custom-option" onclick="changePot(event, 'gold', '✨')">
-              <div style="font-size: 3rem">✨</div>
-              <p>Golden</p>
-            </div>
-            <div class="custom-option" onclick="changePot(event, 'wood', '🪵')">
-              <div style="font-size: 3rem">🪵</div>
-              <p>Wooden</p>
-            </div>
-            <div
-              class="custom-option"
-              onclick="changePot(event, 'ceramic', '🏺')"
-            >
-              <div style="font-size: 3rem">🏺</div>
-              <p>Ceramic</p>
-            </div>
-          </div>
-        </section>
-
         <!-- Background Theme -->
-        <section>
+        <section class="custom-section">
           <h3>Background Theme 🌅</h3>
           <div class="custom-grid">
             <div
@@ -173,47 +144,17 @@
             </div>
           </div>
         </section>
-
-        <!-- Preview -->
-        <section
-          style="
-            text-align: center;
-            background: linear-gradient(
-              135deg,
-              rgba(46, 139, 87, 0.05) 0%,
-              rgba(46, 139, 87, 0.1) 100%
-            );
-          "
-        >
-          <h3>Preview</h3>
-          <div class="preview-combo">
-            <div
-              class="preview-plant-emoji"
-              id="previewPlant"
-              aria-hidden="true"
-            >
-              🌿
-            </div>
-            <div
-              class="preview-pot-emoji"
-              id="previewPotEmoji"
-              aria-hidden="true"
-            >
-              🪴
-            </div>
-          </div>
-        </section>
-
+      </main>
+      <div class="save-actions">
         <button class="btn-primary" onclick="saveCustomization()">
           Save Changes
         </button>
-      </main>
+      </div>
     </div>
 
     <script src="data.js"></script>
     <script>
       let tempPlant = { type: "", emoji: "" };
-      let tempPot = { type: "", emoji: "" };
       let tempTheme = "";
 
       function toggleMenu() {
@@ -228,24 +169,12 @@
             opt.classList.remove("selected");
           });
         e.target.closest(".custom-option").classList.add("selected");
-        document.getElementById("previewPlant").textContent = emoji;
-      }
-
-      function changePot(e, type, emoji) {
-        tempPot = { type, emoji };
-        document
-          .querySelectorAll("section:nth-child(2) .custom-option")
-          .forEach((opt) => {
-            opt.classList.remove("selected");
-          });
-        e.target.closest(".custom-option").classList.add("selected");
-        document.getElementById("previewPotEmoji").textContent = emoji;
       }
 
       function changeTheme(e, theme) {
         tempTheme = theme;
         document
-          .querySelectorAll("section:nth-child(3) .custom-option")
+          .querySelectorAll("section:nth-child(2) .custom-option")
           .forEach((opt) => {
             opt.classList.remove("selected");
           });
@@ -258,10 +187,6 @@
           if (tempPlant.type) {
             user.plant.type = tempPlant.type;
             user.plant.emoji = tempPlant.emoji;
-          }
-          if (tempPot.type) {
-            user.plant.pot = tempPot.type;
-            user.plant.potEmoji = tempPot.emoji;
           }
           if (tempTheme) {
             user.preferences.theme = tempTheme;
@@ -276,14 +201,7 @@
         let user = DataManager.getUser();
         if (user) {
           DataManager.applyTheme();
-          document.getElementById("previewPlant").textContent =
-            user.plant.emoji;
-          if (user.plant.potEmoji) {
-            document.getElementById("previewPotEmoji").textContent =
-              user.plant.potEmoji;
-          }
           tempPlant = { type: user.plant.type, emoji: user.plant.emoji };
-          tempPot = { type: user.plant.pot, emoji: user.plant.potEmoji };
         }
 
         // Accessibility for options
@@ -297,11 +215,18 @@
       });
     </script>
     <style>
+      .custom-section {
+        display: flex;
+        flex-direction: column;
+        min-height: 320px;
+      }
+
       .custom-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 16px;
         margin-top: 16px;
+        flex: 1;
       }
 
       .custom-option {
@@ -312,6 +237,11 @@
         transition: all 0.3s;
         text-align: center;
         background-color: white;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
 
       .custom-option:hover {
@@ -328,6 +258,21 @@
         margin: 12px 0 0 0;
         font-size: 0.9rem;
         color: var(--text-secondary);
+      }
+
+      .save-actions {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 12px;
+        padding-bottom: 8px;
+      }
+
+      .save-actions .btn-primary {
+        width: 220px;
+        max-width: calc(100% - 24px);
+        margin: 0 auto;
       }
 
       .preview-combo {
