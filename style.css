@@ -18,17 +18,16 @@
 
 /* ===== GLOBAL ===== */
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--light-bg);
     margin: 0;
+    color: var(--text-primary);
 }
 
 /* ===== WELCOME SECTION (index.html) ===== */
 .welcome-msg{
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -64,7 +63,11 @@ body {
 /* ===== LOGIN/SIGNUP (login.html) ===== */
 .auth-container {
   width: 100%;
-  padding: 20px;
+  padding: 40px 20px;
+  display: flex;
+  align-items: flex-start;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .auth-card {
@@ -73,7 +76,8 @@ body {
   box-shadow: 0 4px 20px rgba(46, 139, 87, 0.15);
   padding: 40px;
   max-width: 420px;
-  margin: 0 auto;
+  margin: auto;
+  width: 100%;
 }
 
 .auth-header {
@@ -153,7 +157,8 @@ body {
 }
 
 .form-group.checkbox input {
-  width: auto;
+  width: 24px;
+  height: 24px;
   margin-right: 8px;
   cursor: pointer;
 }
@@ -296,11 +301,12 @@ body {
 /* ===== ONBOARDING (onboarding.html) ===== */
 .onboarding-container {
   width: 100%;
-  padding: 20px;
+  padding: 40px 20px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .onboarding-card {
@@ -310,6 +316,7 @@ body {
   padding: 40px;
   max-width: 500px;
   width: 100%;
+  margin: auto;
 }
 
 .progress-bar {
@@ -460,7 +467,7 @@ body {
 }
 
 .message {
-  margin-top: 20px!important;
+  margin-top: 20px;
   font-weight: 500;
   color: var(--primary-color);
 }
@@ -468,11 +475,12 @@ body {
 /* ===== PLANT SETUP (plant-setup.html) ===== */
 .setup-container {
   width: 100%;
-  padding: 20px;
+  padding: 40px 20px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .setup-card {
@@ -482,6 +490,7 @@ body {
   padding: 40px;
   max-width: 500px;
   width: 100%;
+  margin: auto;
 }
 
 .setup-screen {
@@ -539,7 +548,7 @@ body {
   margin-bottom: 24px;
 }
 
-.plant-display {
+.setup-screen .plant-display {
   font-size: 4rem;
   margin-bottom: 12px;
 }
@@ -590,8 +599,8 @@ body {
 
 .goal-checkbox {
   cursor: pointer;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
 }
 
 .goal-text {
@@ -657,7 +666,7 @@ body {
 
 /* ===== DASHBOARD (dashboard.html) ===== */
 .dashboard-body {
-  display: block!important;
+  display: block;
   min-height: 100vh;
   background-color: var(--light-bg);
 }
@@ -1078,4 +1087,45 @@ section {
   .plant-large {
     font-size: 3.5rem;
   }
+}
+
+/* ===== TABLET RESPONSIVENESS ===== */
+@media (max-width: 768px) {
+  .header-nav {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .plant-grid, .custom-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .auth-card, .onboarding-card, .setup-card {
+    padding: 24px;
+  }
+}
+
+/* ===== DARK MODE ===== */
+[data-theme="night"] {
+  --light-bg: #121212;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --border-color: #333;
+}
+[data-theme="night"] section,
+[data-theme="night"] .auth-card,
+[data-theme="night"] .onboarding-card,
+[data-theme="night"] .setup-card,
+[data-theme="night"] .dashboard-header,
+[data-theme="night"] .plant-option,
+[data-theme="night"] .goal-suggestion,
+[data-theme="night"] .custom-option,
+[data-theme="night"] .icon-btn,
+[data-theme="night"] .btn-social,
+[data-theme="night"] .custom-goal-item {
+  background-color: #1e1e1e;
+  border-color: #333;
+}
+[data-theme="night"] .btn-social {
+  color: #e0e0e0;
+}
+[data-theme="night"] .goal-suggestion, [data-theme="night"] .custom-option p {
+  color: #e0e0e0;
 }

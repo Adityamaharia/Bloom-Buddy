@@ -14,6 +14,8 @@ const DataManager = {
       type: "basic", // basic, flower, cactus
       name: "",
       emoji: "🌿",
+      pot: "classic",
+      potEmoji: "🪴",
       stage: "seed", // seed, sprout, bloom
       health: 100,
       createdAt: new Date().toISOString()
@@ -111,10 +113,19 @@ const DataManager = {
     if (!user) return [];
     
     const today = new Date().toDateString();
-    return user.goals.filter(goal => {
-      const goalDate = new Date(goal.lastCompleted || goal.createdAt).toDateString();
-      return goalDate === today;
+    let updated = false;
+    user.goals.forEach(goal => {
+      if (goal.completed) {
+        const lastCompleted = new Date(goal.lastCompleted || goal.createdAt).toDateString();
+        if (lastCompleted !== today) {
+          goal.completed = false;
+          updated = true;
+        }
+      }
     });
+    if (updated) this.saveUser(user);
+    
+    return user.goals;
   },
 
   toggleGoal: function(goalId) {
@@ -123,9 +134,13 @@ const DataManager = {
       const goal = user.goals.find(g => g.id === goalId);
       if (goal) {
         goal.completed = !goal.completed;
-        goal.lastCompleted = new Date().toISOString();
-        this.saveUser(user);
-        this.updateStreak();
+        if (goal.completed) {
+          goal.lastCompleted = new Date().toISOString();
+          this.saveUser(user);
+          this.updateStreak();
+        } else {
+          this.saveUser(user);
+        }
         return goal;
       }
     }
@@ -207,6 +222,13 @@ const DataManager = {
   getPreferences: function() {
     let user = this.getUser();
     return user ? user.preferences : {};
+  },
+
+  applyTheme: function() {
+    let user = this.getUser();
+    if (user && user.preferences && user.preferences.theme) {
+      document.body.setAttribute('data-theme', user.preferences.theme);
+    }
   }
 };
 

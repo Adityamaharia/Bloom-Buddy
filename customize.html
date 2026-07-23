@@ -21,27 +21,27 @@
       <section>
         <h3>Choose Your Plant 🌱</h3>
         <div class="custom-grid">
-          <div class="custom-option selected" onclick="changePlant('basic', '🌿')">
+          <div class="custom-option selected" onclick="changePlant(event, 'basic', '🌿')">
             <div style="font-size: 3rem;">🌿</div>
             <p>Basic Plant</p>
           </div>
-          <div class="custom-option" onclick="changePlant('flower', '🌸')">
+          <div class="custom-option" onclick="changePlant(event, 'flower', '🌸')">
             <div style="font-size: 3rem;">🌸</div>
             <p>Flower</p>
           </div>
-          <div class="custom-option" onclick="changePlant('cactus', '🌵')">
+          <div class="custom-option" onclick="changePlant(event, 'cactus', '🌵')">
             <div style="font-size: 3rem;">🌵</div>
             <p>Cactus</p>
           </div>
-          <div class="custom-option" onclick="changePlant('tree', '🌳')">
+          <div class="custom-option" onclick="changePlant(event, 'tree', '🌳')">
             <div style="font-size: 3rem;">🌳</div>
             <p>Tree</p>
           </div>
-          <div class="custom-option" onclick="changePlant('sunflower', '🌻')">
+          <div class="custom-option" onclick="changePlant(event, 'sunflower', '🌻')">
             <div style="font-size: 3rem;">🌻</div>
             <p>Sunflower</p>
           </div>
-          <div class="custom-option" onclick="changePlant('rose', '🌹')">
+          <div class="custom-option" onclick="changePlant(event, 'rose', '🌹')">
             <div style="font-size: 3rem;">🌹</div>
             <p>Rose</p>
           </div>
@@ -52,19 +52,19 @@
       <section>
         <h3>Choose Your Pot 🪴</h3>
         <div class="custom-grid">
-          <div class="custom-option selected" onclick="changePot('classic', '🪴')">
+          <div class="custom-option selected" onclick="changePot(event, 'classic', '🪴')">
             <div style="font-size: 3rem;">🪴</div>
             <p>Classic</p>
           </div>
-          <div class="custom-option" onclick="changePot('gold', '✨')">
+          <div class="custom-option" onclick="changePot(event, 'gold', '✨')">
             <div style="font-size: 3rem;">✨</div>
             <p>Golden</p>
           </div>
-          <div class="custom-option" onclick="changePot('wood', '🪵')">
+          <div class="custom-option" onclick="changePot(event, 'wood', '🪵')">
             <div style="font-size: 3rem;">🪵</div>
             <p>Wooden</p>
           </div>
-          <div class="custom-option" onclick="changePot('ceramic', '🏺')">
+          <div class="custom-option" onclick="changePot(event, 'ceramic', '🏺')">
             <div style="font-size: 3rem;">🏺</div>
             <p>Ceramic</p>
           </div>
@@ -75,19 +75,19 @@
       <section>
         <h3>Background Theme 🌅</h3>
         <div class="custom-grid">
-          <div class="custom-option selected" onclick="changeTheme('day')">
+          <div class="custom-option selected" onclick="changeTheme(event, 'day')">
             <div style="font-size: 3rem;">🌅</div>
             <p>Day</p>
           </div>
-          <div class="custom-option" onclick="changeTheme('night')">
+          <div class="custom-option" onclick="changeTheme(event, 'night')">
             <div style="font-size: 3rem;">🌙</div>
             <p>Night</p>
           </div>
-          <div class="custom-option" onclick="changeTheme('rain')">
+          <div class="custom-option" onclick="changeTheme(event, 'rain')">
             <div style="font-size: 3rem;">🌧️</div>
             <p>Rain</p>
           </div>
-          <div class="custom-option" onclick="changeTheme('sunset')">
+          <div class="custom-option" onclick="changeTheme(event, 'sunset')">
             <div style="font-size: 3rem;">🌅</div>
             <p>Sunset</p>
           </div>
@@ -108,31 +108,33 @@
   <script src="data.js"></script>
   <script>
     let tempPlant = { type: '', emoji: '' };
+    let tempPot = { type: '', emoji: '' };
     let tempTheme = '';
 
-    function changePlant(type, emoji) {
+    function changePlant(e, type, emoji) {
       tempPlant = { type, emoji };
       document.querySelectorAll('section:first-child .custom-option').forEach(opt => {
         opt.classList.remove('selected');
       });
-      event.target.closest('.custom-option').classList.add('selected');
+      e.target.closest('.custom-option').classList.add('selected');
       document.getElementById('previewPlant').textContent = emoji;
     }
 
-    function changePot(type, emoji) {
+    function changePot(e, type, emoji) {
+      tempPot = { type, emoji };
       document.querySelectorAll('section:nth-child(2) .custom-option').forEach(opt => {
         opt.classList.remove('selected');
       });
-      event.target.closest('.custom-option').classList.add('selected');
+      e.target.closest('.custom-option').classList.add('selected');
       document.getElementById('previewPot').textContent = `Your pot ${emoji}`;
     }
 
-    function changeTheme(theme) {
+    function changeTheme(e, theme) {
       tempTheme = theme;
       document.querySelectorAll('section:nth-child(3) .custom-option').forEach(opt => {
         opt.classList.remove('selected');
       });
-      event.target.closest('.custom-option').classList.add('selected');
+      e.target.closest('.custom-option').classList.add('selected');
     }
 
     function saveCustomization() {
@@ -141,6 +143,10 @@
         if (tempPlant.type) {
           user.plant.type = tempPlant.type;
           user.plant.emoji = tempPlant.emoji;
+        }
+        if (tempPot.type) {
+          user.plant.pot = tempPot.type;
+          user.plant.potEmoji = tempPot.emoji;
         }
         if (tempTheme) {
           user.preferences.theme = tempTheme;
@@ -154,8 +160,13 @@
     window.addEventListener('load', () => {
       let user = DataManager.getUser();
       if (user) {
+        DataManager.applyTheme();
         document.getElementById('previewPlant').textContent = user.plant.emoji;
+        if (user.plant.potEmoji) {
+            document.getElementById('previewPot').textContent = `Your pot ${user.plant.potEmoji}`;
+        }
         tempPlant = { type: user.plant.type, emoji: user.plant.emoji };
+        tempPot = { type: user.plant.pot, emoji: user.plant.potEmoji };
       }
     });
   </script>

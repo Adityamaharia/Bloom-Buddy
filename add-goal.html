@@ -27,14 +27,14 @@
           <div class="form-group">
             <label for="goalIcon">Choose Icon</label>
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px;">
-              <button type="button" class="icon-btn" onclick="selectIcon('💧')">💧</button>
-              <button type="button" class="icon-btn" onclick="selectIcon('🧘')">🧘</button>
-              <button type="button" class="icon-btn" onclick="selectIcon('📝')">📝</button>
-              <button type="button" class="icon-btn" onclick="selectIcon('📖')">📖</button>
-              <button type="button" class="icon-btn" onclick="selectIcon('🌤️')">🌤️</button>
-              <button type="button" class="icon-btn" onclick="selectIcon('💪')">💪</button>
-              <button type="button" class="icon-btn" onclick="selectIcon('🍎')">🍎</button>
-              <button type="button" class="icon-btn" onclick="selectIcon('😴')">😴</button>
+              <button type="button" class="icon-btn" onclick="selectIcon(event, '💧')">💧</button>
+              <button type="button" class="icon-btn" onclick="selectIcon(event, '🧘')">🧘</button>
+              <button type="button" class="icon-btn" onclick="selectIcon(event, '📝')">📝</button>
+              <button type="button" class="icon-btn" onclick="selectIcon(event, '📖')">📖</button>
+              <button type="button" class="icon-btn" onclick="selectIcon(event, '🌤️')">🌤️</button>
+              <button type="button" class="icon-btn" onclick="selectIcon(event, '💪')">💪</button>
+              <button type="button" class="icon-btn" onclick="selectIcon(event, '🍎')">🍎</button>
+              <button type="button" class="icon-btn" onclick="selectIcon(event, '😴')">😴</button>
             </div>
             <input type="hidden" id="goalIcon" value="">
           </div>
@@ -54,19 +54,21 @@
   <script>
     let selectedIcon = '';
 
-    function selectIcon(icon) {
+    function selectIcon(e, icon) {
       selectedIcon = icon;
       document.querySelectorAll('.icon-btn').forEach(btn => {
         btn.style.backgroundColor = 'white';
       });
-      event.target.style.backgroundColor = 'rgba(46, 139, 87, 0.1)';
+      e.target.style.backgroundColor = 'rgba(46, 139, 87, 0.1)';
       document.getElementById('goalIcon').value = icon;
     }
 
     document.getElementById('goalForm').addEventListener('submit', (e) => {
       e.preventDefault();
       
-      const title = document.getElementById('goalTitle').value;
+      const title = document.getElementById('goalTitle').value.trim();
+      if (!title) return;
+
       const icon = selectedIcon || '✓';
       const daily = document.getElementById('dailyReminder').checked;
 

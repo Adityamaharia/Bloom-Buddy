@@ -15,15 +15,15 @@
         <p class="subtitle">Pick a plant to grow with you on your wellness journey</p>
 
         <div class="plant-grid">
-          <div class="plant-option" onclick="selectPlant('basic', '🌿')">
+          <div class="plant-option" onclick="selectPlant(event, 'basic', '🌿')">
             <div class="plant-emoji">🌿</div>
             <p>Basic Plant</p>
           </div>
-          <div class="plant-option" onclick="selectPlant('flower', '🌸')">
+          <div class="plant-option" onclick="selectPlant(event, 'flower', '🌸')">
             <div class="plant-emoji">🌸</div>
             <p>Flower</p>
           </div>
-          <div class="plant-option" onclick="selectPlant('cactus', '🌵')">
+          <div class="plant-option" onclick="selectPlant(event, 'cactus', '🌵')">
             <div class="plant-emoji">🌵</div>
             <p>Cactus</p>
           </div>
@@ -108,14 +108,14 @@
     let selectedGoals = [];
     let currentStep = 1;
 
-    function selectPlant(type, emoji) {
+    function selectPlant(e, type, emoji) {
       selectedPlant = type;
       selectedPlantEmoji = emoji;
       
       document.querySelectorAll('.plant-option').forEach(opt => {
         opt.classList.remove('selected');
       });
-      event.target.closest('.plant-option').classList.add('selected');
+      e.target.closest('.plant-option').classList.add('selected');
       document.getElementById('nextBtn1').disabled = false;
     }
 
@@ -150,9 +150,10 @@
         const goalEl = document.createElement('div');
         goalEl.className = 'custom-goal-item';
         goalEl.innerHTML = `
-          <span>${goal}</span>
+          <span class="custom-goal-text"></span>
           <button onclick="removeCustomGoal(this)">✕</button>
         `;
+        goalEl.querySelector('.custom-goal-text').textContent = goal;
         goalsList.appendChild(goalEl);
         
         selectedGoals.push(goal);
@@ -161,8 +162,11 @@
     }
 
     function removeCustomGoal(btn) {
-      const goalText = btn.parentElement.querySelector('span').textContent;
-      selectedGoals = selectedGoals.filter(g => g !== goalText);
+      const goalText = btn.parentElement.querySelector('.custom-goal-text').textContent;
+      const idx = selectedGoals.indexOf(goalText);
+      if (idx > -1) {
+        selectedGoals.splice(idx, 1);
+      }
       btn.parentElement.remove();
     }
 

@@ -73,10 +73,10 @@
       <section class="mood-section">
         <h3>How are you feeling? 🧠</h3>
         <div class="mood-options">
-          <button class="mood-btn" onclick="logMood('😊')">😊 Happy</button>
-          <button class="mood-btn" onclick="logMood('😌')">😌 Calm</button>
-          <button class="mood-btn" onclick="logMood('😟')">😟 Stressed</button>
-          <button class="mood-btn" onclick="logMood('😴')">😴 Tired</button>
+          <button class="mood-btn" onclick="logMood(event, '😊')">😊 Happy</button>
+          <button class="mood-btn" onclick="logMood(event, '😌')">😌 Calm</button>
+          <button class="mood-btn" onclick="logMood(event, '😟')">😟 Stressed</button>
+          <button class="mood-btn" onclick="logMood(event, '😴')">😴 Tired</button>
         </div>
         <p class="mood-status" id="moodStatus"></p>
       </section>
@@ -140,7 +140,7 @@
       displayStreak(user.streak);
 
       // Display goals
-      displayGoals(user.goals);
+      displayGoals(DataManager.getTodayGoals());
 
       // Display mood status
       const todayMood = DataManager.getTodayMood();
@@ -156,6 +156,8 @@
 
       // Check for end-of-day reflection at night
       checkForReflection(user);
+      
+      DataManager.applyTheme();
     }
 
     function displayPlant(plant) {
@@ -191,9 +193,10 @@
         goalEl.className = 'goal-item ' + (goal.completed ? 'completed' : '');
         goalEl.innerHTML = `
           <input type="checkbox" ${goal.completed ? 'checked' : ''} onchange="toggleGoal(${goal.id})">
-          <span class="goal-title">${goal.title}</span>
+          <span class="goal-title"></span>
           <button class="goal-delete" onclick="deleteGoal(${goal.id})">✕</button>
         `;
+        goalEl.querySelector('.goal-title').textContent = goal.title;
         goalsList.appendChild(goalEl);
       });
     }
@@ -201,7 +204,7 @@
     function toggleGoal(goalId) {
       DataManager.toggleGoal(goalId);
       let user = DataManager.getUser();
-      displayGoals(user.goals);
+      displayGoals(DataManager.getTodayGoals());
       displayStreak(user.streak);
       
       // Plant grows on goal completion
@@ -211,29 +214,28 @@
     function deleteGoal(goalId) {
       if (confirm('Delete this goal?')) {
         DataManager.deleteGoal(goalId);
-        let user = DataManager.getUser();
-        displayGoals(user.goals);
+        displayGoals(DataManager.getTodayGoals());
       }
     }
 
-    function logMood(mood) {
+    function logMood(e, mood) {
       DataManager.addMood(mood);
       document.querySelectorAll('.mood-btn').forEach(btn => {
         btn.classList.remove('selected');
       });
-      event.target.classList.add('selected');
+      e.target.classList.add('selected');
       document.getElementById('moodStatus').textContent = `You logged: ${mood}`;
     }
 
     function updatePlantGrowth() {
-      let user = DataManager.getUser();
-      const completedToday = user.goals.filter(g => g.completed).length;
+      const todayGoals = DataManager.getTodayGoals();
+      const completedToday = todayGoals.filter(g => g.completed).length;
       
-      if (completedToday >= user.goals.length && user.goals.length > 0) {
+      if (completedToday >= todayGoals.length && todayGoals.length > 0) {
         // All goals completed today!
         DataManager.updatePlantStage('bloom');
         showMessage('🎉 Your plant bloomed! Amazing work!');
-      } else if (completedToday >= Math.ceil(user.goals.length / 2)) {
+      } else if (completedToday >= Math.ceil(todayGoals.length / 2)) {
         DataManager.updatePlantStage('sprout');
       }
       

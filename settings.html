@@ -120,14 +120,37 @@
       document.getElementById('goalsPerDay').value = user.preferences.goalsPerDay || 3;
       document.getElementById('focusArea').value = user.preferences.focus || 'stress';
       document.getElementById('notificationsToggle').checked = user.preferences.notifications !== false;
+      document.getElementById('reminderToggle').checked = user.preferences.reminder !== false;
+      document.getElementById('reminderTime').value = user.preferences.reminderTime || '09:00';
+      document.getElementById('darkModeToggle').checked = user.preferences.theme === 'night';
+      
+      DataManager.applyTheme();
     }
 
     function saveProfile() {
       const name = document.getElementById('userName').value;
+      const goalsPerDay = document.getElementById('goalsPerDay').value;
+      const focusArea = document.getElementById('focusArea').value;
+      const notifications = document.getElementById('notificationsToggle').checked;
+      const reminder = document.getElementById('reminderToggle').checked;
+      const reminderTime = document.getElementById('reminderTime').value;
+      const darkMode = document.getElementById('darkModeToggle').checked;
+
       if (name.trim()) {
         DataManager.updateProfile(name);
-        alert('Profile saved! ✅');
       }
+      
+      DataManager.updatePreferences({
+        goalsPerDay,
+        focus: focusArea,
+        notifications,
+        reminder,
+        reminderTime,
+        theme: darkMode ? 'night' : 'day'
+      });
+      
+      DataManager.applyTheme();
+      alert('Settings saved! ✅');
     }
 
     function exportData() {

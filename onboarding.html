@@ -21,15 +21,15 @@
         <p class="subtitle">Choose what matters most to you (you can change this later)</p>
 
         <div class="option-group">
-          <button class="option-btn" onclick="selectGoal('stress')">
+          <button class="option-btn" onclick="selectGoal(event, 'stress')">
             <span class="emoji">😌</span>
             <span class="text">Stress Management</span>
           </button>
-          <button class="option-btn" onclick="selectGoal('routine')">
+          <button class="option-btn" onclick="selectGoal(event, 'routine')">
             <span class="emoji">📅</span>
             <span class="text">Daily Routine</span>
           </button>
-          <button class="option-btn" onclick="selectGoal('mindfulness')">
+          <button class="option-btn" onclick="selectGoal(event, 'mindfulness')">
             <span class="emoji">🧘</span>
             <span class="text">Mindfulness</span>
           </button>
@@ -46,13 +46,13 @@
         <p class="subtitle">Start small. You can always add more.</p>
 
         <div class="option-group">
-          <button class="option-btn" onclick="selectGoalCount(1)">
+          <button class="option-btn" onclick="selectGoalCount(event, 1)">
             <span class="text">1–3 goals<br><span class="small">(Recommended)</span></span>
           </button>
-          <button class="option-btn" onclick="selectGoalCount(2)">
+          <button class="option-btn" onclick="selectGoalCount(event, 2)">
             <span class="text">3–5 goals</span>
           </button>
-          <button class="option-btn" onclick="selectGoalCount(3)">
+          <button class="option-btn" onclick="selectGoalCount(event, 3)">
             <span class="text">5+ goals</span>
           </button>
         </div>
@@ -80,21 +80,21 @@
     let selectedGoalCount = null;
     let currentScreen = 1;
 
-    function selectGoal(goal) {
+    function selectGoal(e, goal) {
       selectedGoal = goal;
       document.querySelectorAll('#screen1 .option-btn').forEach(btn => {
         btn.classList.remove('selected');
       });
-      event.target.closest('.option-btn').classList.add('selected');
+      e.target.closest('.option-btn').classList.add('selected');
       document.getElementById('nextBtn1').disabled = false;
     }
 
-    function selectGoalCount(count) {
+    function selectGoalCount(e, count) {
       selectedGoalCount = count;
       document.querySelectorAll('#screen2 .option-btn').forEach(btn => {
         btn.classList.remove('selected');
       });
-      event.target.closest('.option-btn').classList.add('selected');
+      e.target.closest('.option-btn').classList.add('selected');
       document.getElementById('nextBtn2').disabled = false;
     }
 

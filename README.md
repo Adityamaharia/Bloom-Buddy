@@ -18,6 +18,11 @@ BloomBuddy turns self-improvement into a visual and engaging experience:
 
 ---
 
+## 🌐 Live Demo
+https://bloom-buddy-iota.vercel.app/
+
+---
+
 ## 🚀 Features
 
 ### 🏠 Dashboard
@@ -152,4 +157,3 @@ BloomBuddy is inspired by the idea that **small daily actions lead to meaningful
 ## 📌 Project Status
 
 🚧 Prototype – actively being improved and expanded
-#
