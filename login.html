@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>🌿 BloomBuddy - Login</title>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>🌿 BloomBuddy</h1>
+        <p>Grow your well-being, one step at a time</p>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="auth-form active">
+        <h2>Login</h2>
+        
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="your@email.com" required>
+          <span class="error-msg" id="loginEmailError"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter password" required>
+          <span class="error-msg" id="loginPasswordError"></span>
+        </div>
+
+        <div class="form-group checkbox">
+          <input type="checkbox" id="rememberMe">
+          <label for="rememberMe">Remember me</label>
+        </div>
+
+        <button type="submit" class="btn-primary">Login</button>
+
+        <a href="#" class="forgot-password">Forgot password?</a>
+
+        <div class="divider">OR</div>
+
+        <div class="social-login">
+          <button type="button" class="btn-social">Google</button>
+          <button type="button" class="btn-social">Facebook</button>
+        </div>
+
+        <p class="auth-switch">Don't have an account? <a href="#" onclick="toggleForms(event)">Sign Up</a></p>
+      </form>
+
+      <!-- Signup Form -->
+      <form id="signupForm" class="auth-form">
+        <h2>Sign Up</h2>
+
+        <div class="form-group">
+          <label for="signupName">Full Name</label>
+          <input type="text" id="signupName" placeholder="Your name" required>
+          <span class="error-msg" id="signupNameError"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" placeholder="your@email.com" required>
+          <span class="error-msg" id="signupEmailError"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" placeholder="Min 8 characters" required>
+          <span class="error-msg" id="signupPasswordError"></span>
+          <div class="password-strength" id="passwordStrength"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="signupConfirm">Confirm Password</label>
+          <input type="password" id="signupConfirm" placeholder="Re-enter password" required>
+          <span class="error-msg" id="signupConfirmError"></span>
+        </div>
+
+        <button type="submit" class="btn-primary">Sign Up</button>
+
+        <div class="divider">OR</div>
+
+        <div class="social-login">
+          <button type="button" class="btn-social">Google</button>
+          <button type="button" class="btn-social">Facebook</button>
+        </div>
+
+        <p class="auth-switch">Already have an account? <a href="#" onclick="toggleForms(event)">Login</a></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    window.addEventListener("load", () => {
+      const visited = sessionStorage.getItem("visited");
+      sessionStorage.removeItem("visited");
+      if (!visited) {
+        window.location.href = "index.html";
+      }
+    });
+
+    function toggleForms(e) {
+      e.preventDefault();
+      document.getElementById("loginForm").classList.toggle("active");
+      document.getElementById("signupForm").classList.toggle("active");
+    }
+
+    // Email validation
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    // Password strength checker
+    document.getElementById("signupPassword")?.addEventListener("input", (e) => {
+      const pwd = e.target.value;
+      const strength = document.getElementById("passwordStrength");
+      let level = 0;
+      
+      if (pwd.length >= 8) level++;
+      if (/[A-Z]/.test(pwd)) level++;
+      if (/[0-9]/.test(pwd)) level++;
+      if (/[^A-Za-z0-9]/.test(pwd)) level++;
+      
+      const labels = ["Weak", "Fair", "Good", "Strong", "Very Strong"];
+      const colors = ["#d32f2f", "#f57c00", "#fbc02d", "#689f38", "#388e3c"];
+      
+      strength.textContent = labels[level];
+      strength.style.color = colors[level];
+    });
+
+    // Login form submission
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      let hasError = false;
+
+      // Validate email
+      if (!validateEmail(email)) {
+        document.getElementById("loginEmailError").textContent = "Invalid email format";
+        hasError = true;
+      } else {
+        document.getElementById("loginEmailError").textContent = "";
+      }
+
+      // Validate password
+      if (password.length < 6) {
+        document.getElementById("loginPasswordError").textContent = "Password must be at least 6 characters";
+        hasError = true;
+      } else {
+        document.getElementById("loginPasswordError").textContent = "";
+      }
+
+      if (!hasError) {
+        // Load existing user or simulate login
+        let user = DataManager.getUser();
+        if (!user) {
+          // User doesn't exist locally, create session
+          alert("User not found. Please sign up.");
+          return;
+        }
+        // Redirect to dashboard
+        window.location.href = "dashboard.html";
+      }
+    });
+
+    // Signup form submission
+    document.getElementById("signupForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("signupName").value;
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+      const confirm = document.getElementById("signupConfirm").value;
+      let hasError = false;
+
+      // Validate name
+      if (name.length < 2) {
+        document.getElementById("signupNameError").textContent = "Name must be at least 2 characters";
+        hasError = true;
+      } else {
+        document.getElementById("signupNameError").textContent = "";
+      }
+
+      // Validate email
+      if (!validateEmail(email)) {
+        document.getElementById("signupEmailError").textContent = "Invalid email format";
+        hasError = true;
+      } else {
+        document.getElementById("signupEmailError").textContent = "";
+      }
+
+      // Validate password
+      if (password.length < 8) {
+        document.getElementById("signupPasswordError").textContent = "Password must be at least 8 characters";
+        hasError = true;
+      } else {
+        document.getElementById("signupPasswordError").textContent = "";
+      }
+
+      // Validate password match
+      if (password !== confirm) {
+        document.getElementById("signupConfirmError").textContent = "Passwords do not match";
+        hasError = true;
+      } else {
+        document.getElementById("signupConfirmError").textContent = "";
+      }
+
+      if (!hasError) {
+        // Initialize new user
+        DataManager.initializeUser(name, email);
+        // Redirect to onboarding
+        window.location.href = "onboarding.html";
+      }
+    });
+  </script>
+</body>
+</html>

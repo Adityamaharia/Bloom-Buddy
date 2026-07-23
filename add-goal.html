@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>🌿 BloomBuddy - Add Goal</title>
+</head>
+<body class="dashboard-body">
+  <div class="dashboard-container">
+    <header class="dashboard-header">
+      <div class="header-top">
+        <a href="dashboard.html" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none;">←</a>
+        <h1>Add Goal</h1>
+        <div style="width: 24px;"></div>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <section>
+        <form id="goalForm">
+          <div class="form-group">
+            <label for="goalTitle">Goal Title</label>
+            <input type="text" id="goalTitle" placeholder="e.g., Drink water, Meditate..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="goalIcon">Choose Icon</label>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px;">
+              <button type="button" class="icon-btn" onclick="selectIcon('💧')">💧</button>
+              <button type="button" class="icon-btn" onclick="selectIcon('🧘')">🧘</button>
+              <button type="button" class="icon-btn" onclick="selectIcon('📝')">📝</button>
+              <button type="button" class="icon-btn" onclick="selectIcon('📖')">📖</button>
+              <button type="button" class="icon-btn" onclick="selectIcon('🌤️')">🌤️</button>
+              <button type="button" class="icon-btn" onclick="selectIcon('💪')">💪</button>
+              <button type="button" class="icon-btn" onclick="selectIcon('🍎')">🍎</button>
+              <button type="button" class="icon-btn" onclick="selectIcon('😴')">😴</button>
+            </div>
+            <input type="hidden" id="goalIcon" value="">
+          </div>
+
+          <div class="form-group checkbox">
+            <input type="checkbox" id="dailyReminder" checked>
+            <label for="dailyReminder">Daily reminder</label>
+          </div>
+
+          <button type="submit" class="btn-primary">Add Goal</button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    let selectedIcon = '';
+
+    function selectIcon(icon) {
+      selectedIcon = icon;
+      document.querySelectorAll('.icon-btn').forEach(btn => {
+        btn.style.backgroundColor = 'white';
+      });
+      event.target.style.backgroundColor = 'rgba(46, 139, 87, 0.1)';
+      document.getElementById('goalIcon').value = icon;
+    }
+
+    document.getElementById('goalForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const title = document.getElementById('goalTitle').value;
+      const icon = selectedIcon || '✓';
+      const daily = document.getElementById('dailyReminder').checked;
+
+      DataManager.addGoal({
+        title: `${icon} ${title}`,
+        daily: daily,
+        completed: false
+      });
+
+      window.location.href = 'dashboard.html';
+    });
+  </script>
+  <style>
+    .icon-btn {
+      padding: 12px;
+      border: 1px solid #ddd;
+      background-color: white;
+      border-radius: 6px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .icon-btn:hover {
+      background-color: rgba(46, 139, 87, 0.05);
+    }
+  </style>
+</body>
+</html>

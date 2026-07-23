@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>🌿 BloomBuddy - Dashboard</title>
+</head>
+<body class="dashboard-body">
+  <div class="dashboard-container">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-top">
+        <h1>BloomBuddy</h1>
+        <button class="menu-btn" onclick="toggleMenu()">⚙️</button>
+      </div>
+      <nav class="header-nav" id="headerMenu">
+        <a href="dashboard.html">Home</a>
+        <a href="progress.html">Progress</a>
+        <a href="health-tips.html">Tips</a>
+        <a href="customize.html">Customize</a>
+        <a href="settings.html">Settings</a>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <!-- Plant Section -->
+      <section class="plant-section">
+        <div class="plant-display">
+          <div class="plant-large" id="plantEmoji">🌿</div>
+          <h2 id="plantName">Plant Name</h2>
+          <p class="plant-stage" id="plantStage">Seed Stage</p>
+        </div>
+        <div class="plant-info">
+          <div class="info-item">
+            <span class="label">Stage</span>
+            <span class="value" id="infoStage">Seed</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Health</span>
+            <span class="value" id="infoHealth">100%</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Streak Counter -->
+      <section class="streak-section">
+        <div class="streak-card">
+          <div class="streak-emoji">🔥</div>
+          <div class="streak-text">
+            <p class="streak-label">Gentle Streak</p>
+            <p class="streak-count"><span id="streakCount">0</span> days</p>
+          </div>
+          <div class="streak-longest">
+            <p class="small-text">Best: <span id="longestStreak">0</span></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Today's Goals -->
+      <section class="goals-section">
+        <h3>Today's Goals ✅</h3>
+        
+        <div class="goals-list" id="goalsList">
+          <!-- Goals will be populated here -->
+        </div>
+
+        <button class="btn-add-goal" onclick="navigateTo('add-goal.html')">+ Add Goal</button>
+      </section>
+
+      <!-- Mood Check-in -->
+      <section class="mood-section">
+        <h3>How are you feeling? 🧠</h3>
+        <div class="mood-options">
+          <button class="mood-btn" onclick="logMood('😊')">😊 Happy</button>
+          <button class="mood-btn" onclick="logMood('😌')">😌 Calm</button>
+          <button class="mood-btn" onclick="logMood('😟')">😟 Stressed</button>
+          <button class="mood-btn" onclick="logMood('😴')">😴 Tired</button>
+        </div>
+        <p class="mood-status" id="moodStatus"></p>
+      </section>
+
+      <!-- Quote of the Day -->
+      <section class="quote-section">
+        <p class="quote-text" id="quoteText">"You are allowed to rest."</p>
+        <p class="quote-author" id="quoteAuthor">— BloomBuddy</p>
+      </section>
+
+      <!-- Footer Message -->
+      <section class="footer-message">
+        <p id="footerMessage">You're doing great! Keep going 💙</p>
+      </section>
+    </main>
+  </div>
+
+  <!-- End of Day Reflection Modal -->
+  <div class="modal" id="reflectionModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h2>End of Day Reflection 🌙</h2>
+      <p id="reflectionMessage"></p>
+      <div class="reflection-stats">
+        <p id="reflectionStats"></p>
+      </div>
+      <button class="btn-primary" onclick="closeModal()">See you tomorrow! 💚</button>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    // Quotes for daily inspiration
+    const quotes = [
+      "You are allowed to rest.",
+      "Progress, not perfection.",
+      "Small steps lead to big changes.",
+      "You're doing better than you think.",
+      "Today is a fresh start.",
+      "Your well-being matters.",
+      "Be kind to yourself.",
+      "Every small win counts.",
+      "You have everything you need.",
+      "Breathe. You've got this."
+    ];
+
+    // Initialize dashboard
+    function initDashboard() {
+      let user = DataManager.getUser();
+      
+      if (!user || !user.plant.name) {
+        // Redirect to setup if not initialized
+        window.location.href = 'onboarding.html';
+        return;
+      }
+
+      // Display plant info
+      displayPlant(user.plant);
+
+      // Display streak
+      displayStreak(user.streak);
+
+      // Display goals
+      displayGoals(user.goals);
+
+      // Display mood status
+      const todayMood = DataManager.getTodayMood();
+      if (todayMood) {
+        document.getElementById('moodStatus').textContent = `You logged: ${todayMood}`;
+      } else {
+        document.getElementById('moodStatus').textContent = '';
+      }
+
+      // Display random quote
+      const quote = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById('quoteText').textContent = `"${quote}"`;
+
+      // Check for end-of-day reflection at night
+      checkForReflection(user);
+    }
+
+    function displayPlant(plant) {
+      document.getElementById('plantEmoji').textContent = plant.emoji;
+      document.getElementById('plantName').textContent = plant.name;
+      
+      const stages = {
+        'seed': '🌱 Seed Stage',
+        'sprout': '🌱 Sprouting',
+        'bloom': '🌸 Blooming'
+      };
+      document.getElementById('plantStage').textContent = stages[plant.stage] || 'Growing';
+      document.getElementById('infoStage').textContent = plant.stage.charAt(0).toUpperCase() + plant.stage.slice(1);
+      document.getElementById('infoHealth').textContent = plant.health + '%';
+    }
+
+    function displayStreak(streak) {
+      document.getElementById('streakCount').textContent = streak.current;
+      document.getElementById('longestStreak').textContent = streak.longest;
+    }
+
+    function displayGoals(goals) {
+      const goalsList = document.getElementById('goalsList');
+      goalsList.innerHTML = '';
+
+      if (goals.length === 0) {
+        goalsList.innerHTML = '<p class="no-goals">No goals yet. Add one to get started! 🌱</p>';
+        return;
+      }
+
+      goals.forEach(goal => {
+        const goalEl = document.createElement('div');
+        goalEl.className = 'goal-item ' + (goal.completed ? 'completed' : '');
+        goalEl.innerHTML = `
+          <input type="checkbox" ${goal.completed ? 'checked' : ''} onchange="toggleGoal(${goal.id})">
+          <span class="goal-title">${goal.title}</span>
+          <button class="goal-delete" onclick="deleteGoal(${goal.id})">✕</button>
+        `;
+        goalsList.appendChild(goalEl);
+      });
+    }
+
+    function toggleGoal(goalId) {
+      DataManager.toggleGoal(goalId);
+      let user = DataManager.getUser();
+      displayGoals(user.goals);
+      displayStreak(user.streak);
+      
+      // Plant grows on goal completion
+      updatePlantGrowth();
+    }
+
+    function deleteGoal(goalId) {
+      if (confirm('Delete this goal?')) {
+        DataManager.deleteGoal(goalId);
+        let user = DataManager.getUser();
+        displayGoals(user.goals);
+      }
+    }
+
+    function logMood(mood) {
+      DataManager.addMood(mood);
+      document.querySelectorAll('.mood-btn').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+      event.target.classList.add('selected');
+      document.getElementById('moodStatus').textContent = `You logged: ${mood}`;
+    }
+
+    function updatePlantGrowth() {
+      let user = DataManager.getUser();
+      const completedToday = user.goals.filter(g => g.completed).length;
+      
+      if (completedToday >= user.goals.length && user.goals.length > 0) {
+        // All goals completed today!
+        DataManager.updatePlantStage('bloom');
+        showMessage('🎉 Your plant bloomed! Amazing work!');
+      } else if (completedToday >= Math.ceil(user.goals.length / 2)) {
+        DataManager.updatePlantStage('sprout');
+      }
+      
+      let updatedUser = DataManager.getUser();
+      displayPlant(updatedUser.plant);
+    }
+
+    function showMessage(msg) {
+      const oldMsg = document.getElementById('footerMessage').textContent;
+      document.getElementById('footerMessage').textContent = msg;
+      setTimeout(() => {
+        document.getElementById('footerMessage').textContent = oldMsg;
+      }, 3000);
+    }
+
+    function checkForReflection(user) {
+      const now = new Date();
+      const hour = now.getHours();
+
+      // Show reflection at 9 PM
+      if (hour >= 21 && hour < 22) {
+        const lastReflection = localStorage.getItem('lastReflection');
+        const today = new Date().toDateString();
+
+        if (lastReflection !== today) {
+          showReflection(user);
+          localStorage.setItem('lastReflection', today);
+        }
+      }
+    }
+
+    function showReflection(user) {
+      const completed = user.goals.filter(g => g.completed).length;
+      const total = user.goals.length;
+
+      const reflectionMsg = completed === total 
+        ? '🎉 You crushed all your goals today!' 
+        : completed > 0
+        ? `✅ You completed ${completed} goal${completed > 1 ? 's' : ''}!`
+        : '💚 You showed up. That\'s what matters.';
+
+      document.getElementById('reflectionMessage').textContent = reflectionMsg;
+      document.getElementById('reflectionStats').textContent = 
+        `${completed}/${total} goals completed`;
+
+      document.getElementById('reflectionModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('reflectionModal').style.display = 'none';
+    }
+
+    function toggleMenu() {
+      document.getElementById('headerMenu').classList.toggle('active');
+    }
+
+    function navigateTo(path) {
+      window.location.href = path;
+    }
+
+    // Initialize on page load
+    window.addEventListener('load', initDashboard);
+  </script>
+</body>
+</html>

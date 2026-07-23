@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>🌿 BloomBuddy - Customize</title>
+</head>
+<body class="dashboard-body">
+  <div class="dashboard-container">
+    <header class="dashboard-header">
+      <div class="header-top">
+        <a href="dashboard.html" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none;">←</a>
+        <h1>Customize</h1>
+        <div style="width: 24px;"></div>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <!-- Plant Selection -->
+      <section>
+        <h3>Choose Your Plant 🌱</h3>
+        <div class="custom-grid">
+          <div class="custom-option selected" onclick="changePlant('basic', '🌿')">
+            <div style="font-size: 3rem;">🌿</div>
+            <p>Basic Plant</p>
+          </div>
+          <div class="custom-option" onclick="changePlant('flower', '🌸')">
+            <div style="font-size: 3rem;">🌸</div>
+            <p>Flower</p>
+          </div>
+          <div class="custom-option" onclick="changePlant('cactus', '🌵')">
+            <div style="font-size: 3rem;">🌵</div>
+            <p>Cactus</p>
+          </div>
+          <div class="custom-option" onclick="changePlant('tree', '🌳')">
+            <div style="font-size: 3rem;">🌳</div>
+            <p>Tree</p>
+          </div>
+          <div class="custom-option" onclick="changePlant('sunflower', '🌻')">
+            <div style="font-size: 3rem;">🌻</div>
+            <p>Sunflower</p>
+          </div>
+          <div class="custom-option" onclick="changePlant('rose', '🌹')">
+            <div style="font-size: 3rem;">🌹</div>
+            <p>Rose</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pot Selection -->
+      <section>
+        <h3>Choose Your Pot 🪴</h3>
+        <div class="custom-grid">
+          <div class="custom-option selected" onclick="changePot('classic', '🪴')">
+            <div style="font-size: 3rem;">🪴</div>
+            <p>Classic</p>
+          </div>
+          <div class="custom-option" onclick="changePot('gold', '✨')">
+            <div style="font-size: 3rem;">✨</div>
+            <p>Golden</p>
+          </div>
+          <div class="custom-option" onclick="changePot('wood', '🪵')">
+            <div style="font-size: 3rem;">🪵</div>
+            <p>Wooden</p>
+          </div>
+          <div class="custom-option" onclick="changePot('ceramic', '🏺')">
+            <div style="font-size: 3rem;">🏺</div>
+            <p>Ceramic</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Background Theme -->
+      <section>
+        <h3>Background Theme 🌅</h3>
+        <div class="custom-grid">
+          <div class="custom-option selected" onclick="changeTheme('day')">
+            <div style="font-size: 3rem;">🌅</div>
+            <p>Day</p>
+          </div>
+          <div class="custom-option" onclick="changeTheme('night')">
+            <div style="font-size: 3rem;">🌙</div>
+            <p>Night</p>
+          </div>
+          <div class="custom-option" onclick="changeTheme('rain')">
+            <div style="font-size: 3rem;">🌧️</div>
+            <p>Rain</p>
+          </div>
+          <div class="custom-option" onclick="changeTheme('sunset')">
+            <div style="font-size: 3rem;">🌅</div>
+            <p>Sunset</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Preview -->
+      <section style="text-align: center; background: linear-gradient(135deg, rgba(46, 139, 87, 0.05) 0%, rgba(46, 139, 87, 0.1) 100%);">
+        <h3>Preview</h3>
+        <div style="font-size: 4rem; margin: 20px 0;" id="previewPlant">🌿</div>
+        <p id="previewPot" style="font-size: 1.5rem; color: var(--text-secondary); margin: 0;">Your pot 🪴</p>
+      </section>
+
+      <button class="btn-primary" onclick="saveCustomization()">Save Changes</button>
+    </main>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    let tempPlant = { type: '', emoji: '' };
+    let tempTheme = '';
+
+    function changePlant(type, emoji) {
+      tempPlant = { type, emoji };
+      document.querySelectorAll('section:first-child .custom-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      event.target.closest('.custom-option').classList.add('selected');
+      document.getElementById('previewPlant').textContent = emoji;
+    }
+
+    function changePot(type, emoji) {
+      document.querySelectorAll('section:nth-child(2) .custom-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      event.target.closest('.custom-option').classList.add('selected');
+      document.getElementById('previewPot').textContent = `Your pot ${emoji}`;
+    }
+
+    function changeTheme(theme) {
+      tempTheme = theme;
+      document.querySelectorAll('section:nth-child(3) .custom-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      event.target.closest('.custom-option').classList.add('selected');
+    }
+
+    function saveCustomization() {
+      let user = DataManager.getUser();
+      if (user) {
+        if (tempPlant.type) {
+          user.plant.type = tempPlant.type;
+          user.plant.emoji = tempPlant.emoji;
+        }
+        if (tempTheme) {
+          user.preferences.theme = tempTheme;
+        }
+        DataManager.saveUser(user);
+        alert('Customization saved! ✨');
+        window.location.href = 'dashboard.html';
+      }
+    }
+
+    window.addEventListener('load', () => {
+      let user = DataManager.getUser();
+      if (user) {
+        document.getElementById('previewPlant').textContent = user.plant.emoji;
+        tempPlant = { type: user.plant.type, emoji: user.plant.emoji };
+      }
+    });
+  </script>
+  <style>
+    .custom-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .custom-option {
+      padding: 20px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+      background-color: white;
+    }
+
+    .custom-option:hover {
+      border-color: var(--primary-color);
+      background-color: rgba(46, 139, 87, 0.05);
+    }
+
+    .custom-option.selected {
+      border-color: var(--primary-color);
+      background-color: rgba(46, 139, 87, 0.1);
+    }
+
+    .custom-option p {
+      margin: 12px 0 0 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 480px) {
+      .custom-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</body>
+</html>

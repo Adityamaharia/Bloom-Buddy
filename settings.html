@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>🌿 BloomBuddy - Settings</title>
+</head>
+<body class="dashboard-body">
+  <div class="dashboard-container">
+    <header class="dashboard-header">
+      <div class="header-top">
+        <a href="dashboard.html" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none;">←</a>
+        <h1>Settings</h1>
+        <div style="width: 24px;"></div>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <!-- Profile Section -->
+      <section>
+        <h3>Profile</h3>
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="userName" class="setting-input">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="userEmail" class="setting-input" disabled>
+        </div>
+        <button class="btn-primary" onclick="saveProfile()" style="margin-top: 12px;">Save Profile</button>
+      </section>
+
+      <!-- Preferences -->
+      <section>
+        <h3>Preferences</h3>
+        <div class="setting-item">
+          <span>Goals per day</span>
+          <select id="goalsPerDay" class="setting-input">
+            <option value="3">1–3</option>
+            <option value="5">3–5</option>
+            <option value="7">5+</option>
+          </select>
+        </div>
+        <div class="setting-item">
+          <span>Focus Area</span>
+          <select id="focusArea" class="setting-input">
+            <option value="stress">😌 Stress Management</option>
+            <option value="routine">📅 Daily Routine</option>
+            <option value="mindfulness">🧘 Mindfulness</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Notifications -->
+      <section>
+        <h3>Notifications 🔔</h3>
+        <div class="toggle-item">
+          <span>Enable Notifications</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="notificationsToggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="toggle-item">
+          <span>Daily Reminder</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="reminderToggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="form-group">
+          <label>Reminder Time</label>
+          <input type="time" id="reminderTime" class="setting-input" value="09:00">
+        </div>
+      </section>
+
+      <!-- Display -->
+      <section>
+        <h3>Display 🌙</h3>
+        <div class="toggle-item">
+          <span>Dark Mode</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Data & Privacy -->
+      <section>
+        <h3>Data & Privacy 🔐</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px;">
+          Your data is stored locally in your browser and is never shared with anyone.
+        </p>
+        <button class="btn-secondary" onclick="exportData()">Export My Data</button>
+        <button class="btn-secondary" onclick="clearData()" style="background-color: var(--danger); border-color: var(--danger); color: white; margin-top: 8px;">Delete All Data</button>
+      </section>
+
+      <!-- About -->
+      <section style="background: linear-gradient(135deg, rgba(46, 139, 87, 0.05) 0%, rgba(46, 139, 87, 0.1) 100%);">
+        <h3>About 🌿</h3>
+        <p style="color: var(--text-secondary); margin: 8px 0;">
+          <strong>BloomBuddy v1.0</strong><br>
+          Grow your well-being, one step at a time.<br><br>
+          Built with 💚 to support your mental health journey.
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    function initSettings() {
+      let user = DataManager.getUser();
+      if (!user) return;
+
+      document.getElementById('userName').value = user.name || '';
+      document.getElementById('userEmail').value = user.email || '';
+      document.getElementById('goalsPerDay').value = user.preferences.goalsPerDay || 3;
+      document.getElementById('focusArea').value = user.preferences.focus || 'stress';
+      document.getElementById('notificationsToggle').checked = user.preferences.notifications !== false;
+    }
+
+    function saveProfile() {
+      const name = document.getElementById('userName').value;
+      if (name.trim()) {
+        DataManager.updateProfile(name);
+        alert('Profile saved! ✅');
+      }
+    }
+
+    function exportData() {
+      let user = DataManager.getUser();
+      if (!user) return;
+      
+      const dataStr = JSON.stringify(user, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'bloombuddy-data.json';
+      a.click();
+    }
+
+    function clearData() {
+      if (confirm('Are you sure? This will delete all your data. This cannot be undone.')) {
+        localStorage.removeItem('bloomBuddy_user');
+        alert('Data cleared. Redirecting...');
+        window.location.href = 'login.html';
+      }
+    }
+
+    window.addEventListener('load', initSettings);
+  </script>
+  <style>
+    .setting-input {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      width: 100%;
+    }
+
+    .setting-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    .setting-item {
+      padding: 16px 0;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .setting-item:last-child {
+      border-bottom: none;
+    }
+
+    .setting-item select {
+      width: 40%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+
+    .toggle-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .toggle-item:last-child {
+      border-bottom: none;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: var(--primary-color);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+
+    .btn-secondary {
+      padding: 12px;
+      background-color: #f5f5f5;
+      color: var(--text-primary);
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      width: 100%;
+    }
+
+    .btn-secondary:hover {
+      background-color: #eee;
+    }
+  </style>
+</body>
+</html>
