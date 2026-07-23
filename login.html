@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Login to BloomBuddy or create a new account to start tracking your daily habits and plant growth.">
     <link rel="stylesheet" href="style.css">
     <title>🌿 BloomBuddy - Login</title>
 </head>
@@ -37,14 +38,7 @@
 
         <button type="submit" class="btn-primary">Login</button>
 
-        <a href="#" class="forgot-password" onclick="alert('This feature is coming soon!')">Forgot password?</a>
 
-        <div class="divider">OR</div>
-
-        <div class="social-login">
-          <button type="button" class="btn-social" onclick="alert('This feature is coming soon!')">Google</button>
-          <button type="button" class="btn-social" onclick="alert('This feature is coming soon!')">Facebook</button>
-        </div>
 
         <p class="auth-switch">Don't have an account? <a href="#" onclick="toggleForms(event)">Sign Up</a></p>
       </form>
@@ -67,7 +61,7 @@
 
         <div class="form-group">
           <label for="signupPassword">Password</label>
-          <input type="password" id="signupPassword" placeholder="Min 8 characters" required>
+          <input type="password" id="signupPassword" placeholder="Min 8 characters" minlength="8" autocomplete="new-password" required>
           <span class="error-msg" id="signupPasswordError"></span>
           <div class="password-strength" id="passwordStrength"></div>
         </div>
@@ -80,12 +74,7 @@
 
         <button type="submit" class="btn-primary">Sign Up</button>
 
-        <div class="divider">OR</div>
 
-        <div class="social-login">
-          <button type="button" class="btn-social" onclick="alert('This feature is coming soon!')">Google</button>
-          <button type="button" class="btn-social" onclick="alert('This feature is coming soon!')">Facebook</button>
-        </div>
 
         <p class="auth-switch">Already have an account? <a href="#" onclick="toggleForms(event)">Login</a></p>
       </form>
@@ -158,11 +147,15 @@
         // Load existing user or simulate login
         let user = DataManager.getUser();
         if (!user) {
-          // User doesn't exist locally, create session
-          alert("User not found. Please sign up.");
+          document.getElementById("loginEmailError").textContent = "User not found. Please sign up.";
+          return;
+        }
+        if (user.email !== email || user.password !== password) {
+          document.getElementById("loginPasswordError").textContent = "Incorrect email or password";
           return;
         }
         // Redirect to dashboard
+        sessionStorage.setItem("loggedIn", "true");
         window.location.href = "dashboard.html";
       }
     });
@@ -209,9 +202,16 @@
       }
 
       if (!hasError) {
+        // Check if user already exists
+        let existingUser = DataManager.getUser();
+        if (existingUser && existingUser.email !== email) {
+          showToast("An account already exists on this device. Please log in.");
+          return;
+        }
         // Initialize new user
-        DataManager.initializeUser(name, email);
+        DataManager.initializeUser(name, email, password);
         // Redirect to onboarding
+        sessionStorage.setItem("loggedIn", "true");
         window.location.href = "onboarding.html";
       }
     });

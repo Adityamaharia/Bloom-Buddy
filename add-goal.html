@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Add a new daily goal to track with BloomBuddy.">
     <link rel="stylesheet" href="style.css">
     <title>🌿 BloomBuddy - Add Goal</title>
 </head>
@@ -10,10 +11,17 @@
   <div class="dashboard-container">
     <header class="dashboard-header">
       <div class="header-top">
-        <a href="dashboard.html" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none;">←</a>
-        <h1>Add Goal</h1>
-        <div style="width: 24px;"></div>
+        <a href="dashboard.html" aria-label="Back to dashboard" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none; margin-right: 12px;">←</a>
+        <h1 style="flex-grow: 1; text-align: left;">Add Goal</h1>
+        <button class="menu-btn" aria-label="Menu" onclick="toggleMenu()">☰</button>
       </div>
+      <nav class="header-nav" id="headerMenu">
+        <a href="dashboard.html">Home</a>
+        <a href="progress.html">Progress</a>
+        <a href="health-tips.html">Tips</a>
+        <a href="customize.html">Customize</a>
+        <a href="settings.html">Settings</a>
+      </nav>
     </header>
 
     <main class="dashboard-main">
@@ -21,7 +29,7 @@
         <form id="goalForm">
           <div class="form-group">
             <label for="goalTitle">Goal Title</label>
-            <input type="text" id="goalTitle" placeholder="e.g., Drink water, Meditate..." required>
+            <input type="text" id="goalTitle" placeholder="e.g., Drink water, Meditate..." maxlength="50" required>
           </div>
 
           <div class="form-group">
@@ -54,6 +62,10 @@
   <script>
     let selectedIcon = '';
 
+    function toggleMenu() {
+      document.getElementById('headerMenu').classList.toggle('active');
+    }
+
     function selectIcon(e, icon) {
       selectedIcon = icon;
       document.querySelectorAll('.icon-btn').forEach(btn => {
@@ -80,20 +92,11 @@
 
       window.location.href = 'dashboard.html';
     });
+
+    window.addEventListener('load', () => {
+      DataManager.applyTheme();
+    });
   </script>
-  <style>
-    .icon-btn {
-      padding: 12px;
-      border: 1px solid #ddd;
-      background-color: white;
-      border-radius: 6px;
-      font-size: 1.5rem;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .icon-btn:hover {
-      background-color: rgba(46, 139, 87, 0.05);
-    }
-  </style>
+
 </body>
 </html>

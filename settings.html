@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage your BloomBuddy settings, profile, and data.">
     <link rel="stylesheet" href="style.css">
     <title>🌿 BloomBuddy - Settings</title>
 </head>
@@ -10,10 +11,17 @@
   <div class="dashboard-container">
     <header class="dashboard-header">
       <div class="header-top">
-        <a href="dashboard.html" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none;">←</a>
-        <h1>Settings</h1>
-        <div style="width: 24px;"></div>
+        <a href="dashboard.html" aria-label="Back to dashboard" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none; margin-right: 12px;">←</a>
+        <h1 style="flex-grow: 1; text-align: left;">Settings</h1>
+        <button class="menu-btn" aria-label="Menu" onclick="toggleMenu()">☰</button>
       </div>
+      <nav class="header-nav" id="headerMenu">
+        <a href="dashboard.html">Home</a>
+        <a href="progress.html">Progress</a>
+        <a href="health-tips.html">Tips</a>
+        <a href="customize.html">Customize</a>
+        <a href="settings.html" class="active">Settings</a>
+      </nav>
     </header>
 
     <main class="dashboard-main">
@@ -94,6 +102,7 @@
           Your data is stored locally in your browser and is never shared with anyone.
         </p>
         <button class="btn-secondary" onclick="exportData()">Export My Data</button>
+        <button class="btn-secondary" onclick="logOut()" style="margin-top: 8px;">Log Out</button>
         <button class="btn-secondary" onclick="clearData()" style="background-color: var(--danger); border-color: var(--danger); color: white; margin-top: 8px;">Delete All Data</button>
       </section>
 
@@ -111,6 +120,10 @@
 
   <script src="data.js"></script>
   <script>
+    function toggleMenu() {
+      document.getElementById('headerMenu').classList.toggle('active');
+    }
+
     function initSettings() {
       let user = DataManager.getUser();
       if (!user) return;
@@ -150,7 +163,7 @@
       });
       
       DataManager.applyTheme();
-      alert('Settings saved! ✅');
+      showToast('Settings saved! ✅');
     }
 
     function exportData() {
@@ -167,11 +180,18 @@
     }
 
     function clearData() {
-      if (confirm('Are you sure? This will delete all your data. This cannot be undone.')) {
-        localStorage.removeItem('bloomBuddy_user');
-        alert('Data cleared. Redirecting...');
+      showConfirm('This will delete all your data. This cannot be undone.', () => {
+        localStorage.clear();
+        showToast('Data cleared. Redirecting...');
+        setTimeout(() => window.location.href = 'index.html', 1000);
+      }, 'Clear All Data');
+    }
+
+    function logout() {
+      showConfirm('Are you sure you want to log out?', () => {
+        sessionStorage.removeItem('loggedIn');
         window.location.href = 'login.html';
-      }
+      }, 'Log Out');
     }
 
     window.addEventListener('load', initSettings);

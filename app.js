@@ -16,6 +16,10 @@ window.addEventListener("load", () => {
   // redirect
   setTimeout(() => {
     sessionStorage.setItem("visited", "true");
-    window.location.href = "login.html";
+    if (typeof DataManager !== 'undefined' && DataManager.getUser() && sessionStorage.getItem("loggedIn") === "true") {
+      window.location.href = "dashboard.html";
+    } else {
+      window.location.href = "login.html";
+    }
   }, 2400);
 });

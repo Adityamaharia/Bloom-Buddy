@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View your daily goals, track your streak, and see your plant grow on the BloomBuddy Dashboard.">
     <link rel="stylesheet" href="style.css">
     <title>🌿 BloomBuddy - Dashboard</title>
 </head>
@@ -12,7 +13,7 @@
     <header class="dashboard-header">
       <div class="header-top">
         <h1>BloomBuddy</h1>
-        <button class="menu-btn" onclick="toggleMenu()">⚙️</button>
+        <button class="menu-btn" aria-label="Settings Menu" onclick="toggleMenu()">⚙️</button>
       </div>
       <nav class="header-nav" id="headerMenu">
         <a href="dashboard.html">Home</a>
@@ -28,7 +29,7 @@
       <!-- Plant Section -->
       <section class="plant-section">
         <div class="plant-display">
-          <div class="plant-large" id="plantEmoji">🌿</div>
+          <div class="plant-large" id="plantEmoji" aria-hidden="true">🌿</div>
           <h2 id="plantName">Plant Name</h2>
           <p class="plant-stage" id="plantStage">Seed Stage</p>
         </div>
@@ -47,7 +48,7 @@
       <!-- Streak Counter -->
       <section class="streak-section">
         <div class="streak-card">
-          <div class="streak-emoji">🔥</div>
+          <div class="streak-emoji" aria-hidden="true">🔥</div>
           <div class="streak-text">
             <p class="streak-label">Gentle Streak</p>
             <p class="streak-count"><span id="streakCount">0</span> days</p>
@@ -97,7 +98,7 @@
   <!-- End of Day Reflection Modal -->
   <div class="modal" id="reflectionModal">
     <div class="modal-content">
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" aria-label="Close modal" onclick="closeModal()">✕</button>
       <h2>End of Day Reflection 🌙</h2>
       <p id="reflectionMessage"></p>
       <div class="reflection-stats">
@@ -133,6 +134,9 @@
         return;
       }
 
+      DataManager.checkStreak();
+      user = DataManager.getUser();
+
       // Display plant info
       displayPlant(user.plant);
 
@@ -161,12 +165,19 @@
     }
 
     function displayPlant(plant) {
-      document.getElementById('plantEmoji').textContent = plant.emoji;
-      document.getElementById('plantName').textContent = plant.name;
+      let currentEmoji = plant.emoji || '🌿';
+      if (plant.stage === 'seed') {
+        currentEmoji = '🌱';
+      } else if (plant.stage === 'sprout') {
+        currentEmoji = '🌿';
+      }
+      
+      document.getElementById('plantEmoji').textContent = currentEmoji;
+      document.getElementById('plantName').textContent = plant.name || 'Your Plant';
       
       const stages = {
         'seed': '🌱 Seed Stage',
-        'sprout': '🌱 Sprouting',
+        'sprout': '🌿 Sprout',
         'bloom': '🌸 Blooming'
       };
       document.getElementById('plantStage').textContent = stages[plant.stage] || 'Growing';
@@ -192,9 +203,9 @@
         const goalEl = document.createElement('div');
         goalEl.className = 'goal-item ' + (goal.completed ? 'completed' : '');
         goalEl.innerHTML = `
-          <input type="checkbox" ${goal.completed ? 'checked' : ''} onchange="toggleGoal(${goal.id})">
+          <input type="checkbox" ${goal.completed ? 'checked' : ''} onchange="toggleGoal(${goal.id})" aria-label="Toggle goal">
           <span class="goal-title"></span>
-          <button class="goal-delete" onclick="deleteGoal(${goal.id})">✕</button>
+          <button class="goal-delete" aria-label="Delete goal" onclick="deleteGoal(${goal.id})">✕</button>
         `;
         goalEl.querySelector('.goal-title').textContent = goal.title;
         goalsList.appendChild(goalEl);
@@ -212,10 +223,10 @@
     }
 
     function deleteGoal(goalId) {
-      if (confirm('Delete this goal?')) {
+      showConfirm('Are you sure you want to delete this goal?', () => {
         DataManager.deleteGoal(goalId);
         displayGoals(DataManager.getTodayGoals());
-      }
+      }, 'Delete Goal');
     }
 
     function logMood(e, mood) {
@@ -235,8 +246,10 @@
         // All goals completed today!
         DataManager.updatePlantStage('bloom');
         showMessage('🎉 Your plant bloomed! Amazing work!');
-      } else if (completedToday >= Math.ceil(todayGoals.length / 2)) {
+      } else if (completedToday > 0 && completedToday >= Math.ceil(todayGoals.length / 2)) {
         DataManager.updatePlantStage('sprout');
+      } else {
+        DataManager.updatePlantStage('seed');
       }
       
       let updatedUser = DataManager.getUser();
@@ -255,14 +268,14 @@
       const now = new Date();
       const hour = now.getHours();
 
-      // Show reflection at 9 PM
-      if (hour >= 21 && hour < 22) {
-        const lastReflection = localStorage.getItem('lastReflection');
+      // Show reflection after 8 PM
+      if (hour >= 20) {
+        const lastReflection = localStorage.getItem(`lastReflection_${user.email}`);
         const today = new Date().toDateString();
 
         if (lastReflection !== today) {
           showReflection(user);
-          localStorage.setItem('lastReflection', today);
+          localStorage.setItem(`lastReflection_${user.email}`, today);
         }
       }
     }

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Set up your BloomBuddy plant and initial goals.">
     <link rel="stylesheet" href="style.css">
     <title>🌿 BloomBuddy - Plant Setup</title>
 </head>
@@ -38,7 +39,7 @@
         <p class="subtitle">Give it a name to make it feel special</p>
 
         <div class="plant-preview">
-          <div class="plant-display" id="plantPreview">🌿</div>
+          <div class="plant-display" id="plantPreview" aria-hidden="true">🌿</div>
         </div>
 
         <div class="form-group">
@@ -176,6 +177,17 @@
       currentStep++;
       screens[currentStep - 1].classList.add('active');
     }
+
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.plant-option, .goal-suggestion').forEach(el => {
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'button');
+        el.addEventListener('keydown', e => {
+          if (e.key === 'Enter') el.click();
+        });
+      });
+      DataManager.applyTheme();
+    });
 
     function completeSetup() {
       let user = DataManager.getUser();

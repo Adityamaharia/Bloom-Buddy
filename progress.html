@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Track your BloomBuddy progress, completion rates, and mood trends over time.">
     <link rel="stylesheet" href="style.css">
     <title>🌿 BloomBuddy - Progress</title>
 </head>
@@ -10,10 +11,17 @@
   <div class="dashboard-container">
     <header class="dashboard-header">
       <div class="header-top">
-        <a href="dashboard.html" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none;">←</a>
-        <h1>Progress</h1>
-        <div style="width: 24px;"></div>
+        <a href="dashboard.html" aria-label="Back to dashboard" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none; margin-right: 12px;">←</a>
+        <h1 style="flex-grow: 1; text-align: left;">Progress</h1>
+        <button class="menu-btn" aria-label="Menu" onclick="toggleMenu()">☰</button>
       </div>
+      <nav class="header-nav" id="headerMenu">
+        <a href="dashboard.html">Home</a>
+        <a href="progress.html" class="active">Progress</a>
+        <a href="health-tips.html">Tips</a>
+        <a href="customize.html">Customize</a>
+        <a href="settings.html">Settings</a>
+      </nav>
     </header>
 
     <main class="dashboard-main">
@@ -81,13 +89,17 @@
 
   <script src="data.js"></script>
   <script>
+    function toggleMenu() {
+      document.getElementById('headerMenu').classList.toggle('active');
+    }
+
     function initProgress() {
       let user = DataManager.getUser();
       if (!user) return;
 
       // Update plant stage indicator
       const stageIndex = { 'seed': 0, 'sprout': 1, 'bloom': 2 };
-      const current = stageIndex[user.plant.stage] || 0;
+      const current = user.plant ? (stageIndex[user.plant.stage] || 0) : 0;
       const stages = document.querySelectorAll('.stage-item');
       stages.forEach((stage, i) => {
         stage.classList.remove('active');
@@ -113,15 +125,21 @@
         moodCounts[mood.mood] = (moodCounts[mood.mood] || 0) + 1;
       });
 
-      let moodHtml = '';
+      const moodTrendsDiv = document.getElementById('moodTrends');
+      moodTrendsDiv.innerHTML = '';
       if (Object.keys(moodCounts).length === 0) {
-        moodHtml = '<p style="color: var(--text-secondary); text-align: center;">No mood data yet. Log your mood daily!</p>';
+        moodTrendsDiv.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No mood data yet. Log your mood daily!</p>';
       } else {
         Object.entries(moodCounts).forEach(([mood, count]) => {
-          moodHtml += `<p style="margin-bottom: 8px;"><strong>${mood}</strong> — logged ${count} time${count > 1 ? 's' : ''}</p>`;
+          const p = document.createElement('p');
+          p.style.marginBottom = '8px';
+          const strong = document.createElement('strong');
+          strong.textContent = mood;
+          p.appendChild(strong);
+          p.appendChild(document.createTextNode(` — logged ${count} time${count > 1 ? 's' : ''}`));
+          moodTrendsDiv.appendChild(p);
         });
       }
-      document.getElementById('moodTrends').innerHTML = moodHtml;
 
       // Generate insights
       const insights = generateInsights(user, moodCounts, completionRate);
@@ -161,66 +179,11 @@
       return insights;
     }
 
-    window.addEventListener('load', initProgress);
+    window.addEventListener('load', () => {
+      initProgress();
+      DataManager.applyTheme();
+    });
   </script>
-  <style>
-    .growth-stage {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 16px;
-    }
 
-    .stage-item {
-      text-align: center;
-      padding: 16px;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      transition: all 0.3s;
-    }
-
-    .stage-item.active {
-      border-color: var(--primary-color);
-      background-color: rgba(46, 139, 87, 0.1);
-    }
-
-    .stage-emoji {
-      font-size: 2.5rem;
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .stage-item p {
-      margin: 0;
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-
-    .stat-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .stat-card {
-      padding: 16px;
-      background-color: rgba(46, 139, 87, 0.1);
-      border-radius: 8px;
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--primary-color);
-      margin-bottom: 4px;
-    }
-
-    .stat-label {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-    }
-  </style>
 </body>
 </html>

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Customize your BloomBuddy plant, pot, and app theme.">
     <link rel="stylesheet" href="style.css">
     <title>🌿 BloomBuddy - Customize</title>
 </head>
@@ -10,10 +11,17 @@
   <div class="dashboard-container">
     <header class="dashboard-header">
       <div class="header-top">
-        <a href="dashboard.html" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none;">←</a>
-        <h1>Customize</h1>
-        <div style="width: 24px;"></div>
+        <a href="dashboard.html" aria-label="Back to dashboard" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none; margin-right: 12px;">←</a>
+        <h1 style="flex-grow: 1; text-align: left;">Customize</h1>
+        <button class="menu-btn" aria-label="Menu" onclick="toggleMenu()">☰</button>
       </div>
+      <nav class="header-nav" id="headerMenu">
+        <a href="dashboard.html">Home</a>
+        <a href="progress.html">Progress</a>
+        <a href="health-tips.html">Tips</a>
+        <a href="customize.html" class="active">Customize</a>
+        <a href="settings.html">Settings</a>
+      </nav>
     </header>
 
     <main class="dashboard-main">
@@ -97,8 +105,10 @@
       <!-- Preview -->
       <section style="text-align: center; background: linear-gradient(135deg, rgba(46, 139, 87, 0.05) 0%, rgba(46, 139, 87, 0.1) 100%);">
         <h3>Preview</h3>
-        <div style="font-size: 4rem; margin: 20px 0;" id="previewPlant">🌿</div>
-        <p id="previewPot" style="font-size: 1.5rem; color: var(--text-secondary); margin: 0;">Your pot 🪴</p>
+        <div class="preview-combo">
+          <div class="preview-plant-emoji" id="previewPlant" aria-hidden="true">🌿</div>
+          <div class="preview-pot-emoji" id="previewPotEmoji" aria-hidden="true">🪴</div>
+        </div>
       </section>
 
       <button class="btn-primary" onclick="saveCustomization()">Save Changes</button>
@@ -110,6 +120,10 @@
     let tempPlant = { type: '', emoji: '' };
     let tempPot = { type: '', emoji: '' };
     let tempTheme = '';
+
+    function toggleMenu() {
+      document.getElementById('headerMenu').classList.toggle('active');
+    }
 
     function changePlant(e, type, emoji) {
       tempPlant = { type, emoji };
@@ -126,7 +140,7 @@
         opt.classList.remove('selected');
       });
       e.target.closest('.custom-option').classList.add('selected');
-      document.getElementById('previewPot').textContent = `Your pot ${emoji}`;
+      document.getElementById('previewPotEmoji').textContent = emoji;
     }
 
     function changeTheme(e, theme) {
@@ -152,8 +166,8 @@
           user.preferences.theme = tempTheme;
         }
         DataManager.saveUser(user);
-        alert('Customization saved! ✨');
-        window.location.href = 'dashboard.html';
+        showToast('Customization saved! ✨');
+        setTimeout(() => window.location.href = 'dashboard.html', 1000);
       }
     }
 
@@ -163,11 +177,20 @@
         DataManager.applyTheme();
         document.getElementById('previewPlant').textContent = user.plant.emoji;
         if (user.plant.potEmoji) {
-            document.getElementById('previewPot').textContent = `Your pot ${user.plant.potEmoji}`;
+            document.getElementById('previewPotEmoji').textContent = user.plant.potEmoji;
         }
         tempPlant = { type: user.plant.type, emoji: user.plant.emoji };
         tempPot = { type: user.plant.pot, emoji: user.plant.potEmoji };
       }
+
+      // Accessibility for options
+      document.querySelectorAll('.custom-option').forEach(el => {
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'button');
+        el.addEventListener('keydown', e => {
+          if (e.key === 'Enter') el.click();
+        });
+      });
     });
   </script>
   <style>
@@ -202,6 +225,29 @@
       margin: 12px 0 0 0;
       font-size: 0.9rem;
       color: var(--text-secondary);
+    }
+
+    .preview-combo {
+      position: relative;
+      height: 120px;
+      margin: 20px auto;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    
+    .preview-plant-emoji {
+      font-size: 4rem;
+      position: absolute;
+      bottom: 20px;
+      z-index: 1;
+    }
+    
+    .preview-pot-emoji {
+      font-size: 4rem;
+      position: absolute;
+      bottom: -10px;
+      z-index: 2;
     }
 
     @media (max-width: 480px) {

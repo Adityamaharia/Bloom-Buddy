@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read daily mental health tips to improve your well-being with BloomBuddy.">
     <link rel="stylesheet" href="style.css">
     <title>🌿 BloomBuddy - Health Tips</title>
 </head>
@@ -10,10 +11,17 @@
   <div class="dashboard-container">
     <header class="dashboard-header">
       <div class="header-top">
-        <a href="dashboard.html" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none;">←</a>
-        <h1>Mental Health Tips</h1>
-        <div style="width: 24px;"></div>
+        <a href="dashboard.html" aria-label="Back to dashboard" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none; margin-right: 12px;">←</a>
+        <h1 style="flex-grow: 1; text-align: left;">Tips</h1>
+        <button class="menu-btn" aria-label="Menu" onclick="toggleMenu()">☰</button>
       </div>
+      <nav class="header-nav" id="headerMenu">
+        <a href="dashboard.html">Home</a>
+        <a href="progress.html">Progress</a>
+        <a href="health-tips.html" class="active">Tips</a>
+        <a href="customize.html">Customize</a>
+        <a href="settings.html">Settings</a>
+      </nav>
     </header>
 
     <main class="dashboard-main">
@@ -102,30 +110,17 @@
     </main>
   </div>
 
-  <style>
-    .tip-list {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-      margin-top: 16px;
+  <script src="data.js"></script>
+  <script>
+    function toggleMenu() {
+      document.getElementById('headerMenu').classList.toggle('active');
     }
 
-    .tip-card {
-      padding: 16px;
-      background-color: rgba(46, 139, 87, 0.05);
-      border-left: 4px solid var(--primary-color);
-      border-radius: 4px;
-    }
+    window.addEventListener('load', () => {
+      DataManager.applyTheme();
+    });
+  </script>
 
-    .tip-card p {
-      margin: 0;
-      color: var(--text-primary);
-      line-height: 1.5;
-    }
 
-    .tip-card strong {
-      color: var(--primary-color);
-    }
-  </style>
 </body>
 </html>
