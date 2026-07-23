@@ -299,7 +299,13 @@ const DataManager = {
   applyTheme: function () {
     let user = this.getUser();
     if (user && user.preferences && user.preferences.theme) {
-      document.body.setAttribute("data-theme", user.preferences.theme);
+      const theme = user.preferences.theme;
+      if (document.documentElement) {
+        document.documentElement.setAttribute("data-theme", theme);
+      }
+      if (document.body) {
+        document.body.setAttribute("data-theme", theme);
+      }
     }
   },
 };
