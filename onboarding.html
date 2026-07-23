@@ -1,146 +1,204 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Welcome to BloomBuddy. Set up your wellness journey.">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Welcome to BloomBuddy. Set up your wellness journey."
+    />
+    <script>
+      (function () {
+        try {
+          const savedUser = localStorage.getItem("bloomBuddy_user");
+          const parsedUser = savedUser ? JSON.parse(savedUser) : null;
+          const theme = parsedUser?.preferences?.theme || "day";
+          const normalizedTheme = ["day", "night", "rain", "sunset"].includes(
+            theme,
+          )
+            ? theme
+            : "day";
+          document.documentElement.setAttribute("data-theme", normalizedTheme);
+          if (document.body) {
+            document.body.setAttribute("data-theme", normalizedTheme);
+          }
+          const background =
+            normalizedTheme === "night"
+              ? "#0f172a"
+              : normalizedTheme === "rain"
+                ? "#e6f2ff"
+                : normalizedTheme === "sunset"
+                  ? "#fff3e0"
+                  : "#f8fafc";
+          document.documentElement.style.backgroundColor = background;
+          if (document.body) {
+            document.body.style.backgroundColor = background;
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css" />
     <title>🌿 BloomBuddy - Onboarding</title>
-</head>
-<body>
-  <div class="onboarding-container">
-    <div class="onboarding-card">
-      <div class="progress-bar">
-        <div class="progress" id="progressBar" style="width: 0%"></div>
-      </div>
+  </head>
+  <body>
+    <div class="onboarding-container">
+      <div class="onboarding-card">
+        <div class="progress-bar">
+          <div class="progress" id="progressBar" style="width: 0%"></div>
+        </div>
 
-      <!-- Question 1: What do you want help with? -->
-      <div class="onboarding-screen active" id="screen1">
-        <button class="skip-btn" onclick="skipOnboarding()">Skip</button>
-        
-        <h2>What would you like help with? 🌱</h2>
-        <p class="subtitle">Choose what matters most to you (you can change this later)</p>
+        <!-- Question 1: What do you want help with? -->
+        <div class="onboarding-screen active" id="screen1">
+          <button class="skip-btn" onclick="skipOnboarding()">Skip</button>
 
-        <div class="option-group">
-          <button class="option-btn" onclick="selectGoal(event, 'stress')">
-            <span class="emoji">😌</span>
-            <span class="text">Stress Management</span>
-          </button>
-          <button class="option-btn" onclick="selectGoal(event, 'routine')">
-            <span class="emoji">📅</span>
-            <span class="text">Daily Routine</span>
-          </button>
-          <button class="option-btn" onclick="selectGoal(event, 'mindfulness')">
-            <span class="emoji">🧘</span>
-            <span class="text">Mindfulness</span>
+          <h2>What would you like help with? 🌱</h2>
+          <p class="subtitle">
+            Choose what matters most to you (you can change this later)
+          </p>
+
+          <div class="option-group">
+            <button class="option-btn" onclick="selectGoal(event, 'stress')">
+              <span class="emoji">😌</span>
+              <span class="text">Stress Management</span>
+            </button>
+            <button class="option-btn" onclick="selectGoal(event, 'routine')">
+              <span class="emoji">📅</span>
+              <span class="text">Daily Routine</span>
+            </button>
+            <button
+              class="option-btn"
+              onclick="selectGoal(event, 'mindfulness')"
+            >
+              <span class="emoji">🧘</span>
+              <span class="text">Mindfulness</span>
+            </button>
+          </div>
+
+          <button
+            class="btn-next"
+            onclick="nextScreen()"
+            disabled
+            id="nextBtn1"
+          >
+            Continue
           </button>
         </div>
 
-        <button class="btn-next" onclick="nextScreen()" disabled id="nextBtn1">Continue</button>
-      </div>
+        <!-- Question 2: How many goals per day? -->
+        <div class="onboarding-screen" id="screen2">
+          <button class="skip-btn" onclick="skipOnboarding()">Skip</button>
 
-      <!-- Question 2: How many goals per day? -->
-      <div class="onboarding-screen" id="screen2">
-        <button class="skip-btn" onclick="skipOnboarding()">Skip</button>
+          <h2>How many goals per day? 🎯</h2>
+          <p class="subtitle">Start small. You can always add more.</p>
 
-        <h2>How many goals per day? 🎯</h2>
-        <p class="subtitle">Start small. You can always add more.</p>
+          <div class="option-group">
+            <button class="option-btn" onclick="selectGoalCount(event, 1)">
+              <span class="text"
+                >1–3 goals<br /><span class="small">(Recommended)</span></span
+              >
+            </button>
+            <button class="option-btn" onclick="selectGoalCount(event, 2)">
+              <span class="text">3–5 goals</span>
+            </button>
+            <button class="option-btn" onclick="selectGoalCount(event, 3)">
+              <span class="text">5+ goals</span>
+            </button>
+          </div>
 
-        <div class="option-group">
-          <button class="option-btn" onclick="selectGoalCount(event, 1)">
-            <span class="text">1–3 goals<br><span class="small">(Recommended)</span></span>
-          </button>
-          <button class="option-btn" onclick="selectGoalCount(event, 2)">
-            <span class="text">3–5 goals</span>
-          </button>
-          <button class="option-btn" onclick="selectGoalCount(event, 3)">
-            <span class="text">5+ goals</span>
+          <button
+            class="btn-next"
+            onclick="nextScreen()"
+            disabled
+            id="nextBtn2"
+          >
+            Continue
           </button>
         </div>
 
-        <button class="btn-next" onclick="nextScreen()" disabled id="nextBtn2">Continue</button>
-      </div>
+        <!-- Welcome Message -->
+        <div class="onboarding-screen" id="screen3">
+          <div class="welcome-animation">
+            <div class="emoji-large">🌱</div>
+            <h2>Welcome to BloomBuddy! 🌿</h2>
+            <p>"Grow your well-being, one step at a time"</p>
+            <p class="message">
+              Let's create your plant and set up your first goals.
+            </p>
+          </div>
 
-      <!-- Welcome Message -->
-      <div class="onboarding-screen" id="screen3">
-        <div class="welcome-animation">
-          <div class="emoji-large">🌱</div>
-          <h2>Welcome to BloomBuddy! 🌿</h2>
-          <p>"Grow your well-being, one step at a time"</p>
-          <p class="message">Let's create your plant and set up your first goals.</p>
+          <button class="btn-primary" onclick="completedOnboarding()">
+            Let's Begin
+          </button>
         </div>
-
-        <button class="btn-primary" onclick="completedOnboarding()">Let's Begin</button>
       </div>
     </div>
-  </div>
 
-  <script src="data.js"></script>
-  <script>
-    let selectedGoal = null;
-    let selectedGoalCount = null;
-    let currentScreen = 1;
+    <script src="data.js"></script>
+    <script>
+      let selectedGoal = null;
+      let selectedGoalCount = null;
+      let currentScreen = 1;
 
-    function selectGoal(e, goal) {
-      selectedGoal = goal;
-      document.querySelectorAll('#screen1 .option-btn').forEach(btn => {
-        btn.classList.remove('selected');
+      function selectGoal(e, goal) {
+        selectedGoal = goal;
+        document.querySelectorAll("#screen1 .option-btn").forEach((btn) => {
+          btn.classList.remove("selected");
+        });
+        e.target.closest(".option-btn").classList.add("selected");
+        document.getElementById("nextBtn1").disabled = false;
+      }
+
+      function selectGoalCount(e, count) {
+        selectedGoalCount = count;
+        document.querySelectorAll("#screen2 .option-btn").forEach((btn) => {
+          btn.classList.remove("selected");
+        });
+        e.target.closest(".option-btn").classList.add("selected");
+        document.getElementById("nextBtn2").disabled = false;
+      }
+
+      function nextScreen() {
+        const screens = document.querySelectorAll(".onboarding-screen");
+        screens[currentScreen - 1].classList.remove("active");
+        currentScreen++;
+        screens[currentScreen - 1].classList.add("active");
+
+        // Update progress bar
+        const progress = (currentScreen / screens.length) * 100;
+        document.getElementById("progressBar").style.width = progress + "%";
+      }
+
+      function skipOnboarding() {
+        completedOnboarding();
+      }
+
+      function completedOnboarding() {
+        // Save onboarding preferences
+        let user = DataManager.getUser();
+        if (!user) {
+          // Redirect to login if no user
+          window.location.href = "login.html";
+          return;
+        }
+
+        // Store preferences
+        if (selectedGoal) {
+          user.preferences.focus = selectedGoal;
+        }
+        if (selectedGoalCount) {
+          const counts = [3, 5, 7];
+          user.preferences.goalsPerDay = counts[selectedGoalCount - 1];
+        }
+        DataManager.saveUser(user);
+
+        // Go to plant setup
+        window.location.href = "plant-setup.html";
+      }
+
+      // Initialize progress
+      window.addEventListener("load", () => {
+        document.getElementById("progressBar").style.width = "33.33%";
       });
-      e.target.closest('.option-btn').classList.add('selected');
-      document.getElementById('nextBtn1').disabled = false;
-    }
-
-    function selectGoalCount(e, count) {
-      selectedGoalCount = count;
-      document.querySelectorAll('#screen2 .option-btn').forEach(btn => {
-        btn.classList.remove('selected');
-      });
-      e.target.closest('.option-btn').classList.add('selected');
-      document.getElementById('nextBtn2').disabled = false;
-    }
-
-    function nextScreen() {
-      const screens = document.querySelectorAll('.onboarding-screen');
-      screens[currentScreen - 1].classList.remove('active');
-      currentScreen++;
-      screens[currentScreen - 1].classList.add('active');
-
-      // Update progress bar
-      const progress = (currentScreen / screens.length) * 100;
-      document.getElementById('progressBar').style.width = progress + '%';
-    }
-
-    function skipOnboarding() {
-      completedOnboarding();
-    }
-
-    function completedOnboarding() {
-      // Save onboarding preferences
-      let user = DataManager.getUser();
-      if (!user) {
-        // Redirect to login if no user
-        window.location.href = 'login.html';
-        return;
-      }
-
-      // Store preferences
-      if (selectedGoal) {
-        user.preferences.focus = selectedGoal;
-      }
-      if (selectedGoalCount) {
-        const counts = [3, 5, 7];
-        user.preferences.goalsPerDay = counts[selectedGoalCount - 1];
-      }
-      DataManager.saveUser(user);
-
-      // Go to plant setup
-      window.location.href = 'plant-setup.html';
-    }
-
-    // Initialize progress
-    window.addEventListener('load', () => {
-      document.getElementById('progressBar').style.width = '33.33%';
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>

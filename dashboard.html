@@ -1,316 +1,423 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="View your daily goals, track your streak, and see your plant grow on the BloomBuddy Dashboard.">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="View your daily goals, track your streak, and see your plant grow on the BloomBuddy Dashboard."
+    />
+    <script>
+      (function () {
+        try {
+          const savedUser = localStorage.getItem("bloomBuddy_user");
+          const parsedUser = savedUser ? JSON.parse(savedUser) : null;
+          const theme = parsedUser?.preferences?.theme || "day";
+          const normalizedTheme = ["day", "night", "rain", "sunset"].includes(
+            theme,
+          )
+            ? theme
+            : "day";
+          document.documentElement.setAttribute("data-theme", normalizedTheme);
+          if (document.body) {
+            document.body.setAttribute("data-theme", normalizedTheme);
+          }
+          const background =
+            normalizedTheme === "night"
+              ? "#0f172a"
+              : normalizedTheme === "rain"
+                ? "#e6f2ff"
+                : normalizedTheme === "sunset"
+                  ? "#fff3e0"
+                  : "#f8fafc";
+          document.documentElement.style.backgroundColor = background;
+          if (document.body) {
+            document.body.style.backgroundColor = background;
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css" />
     <title>🌿 BloomBuddy - Dashboard</title>
-</head>
-<body class="dashboard-body">
-  <div class="dashboard-container">
-    <!-- Header -->
-    <header class="dashboard-header">
-      <div class="header-top">
-        <h1>BloomBuddy</h1>
-        <button class="menu-btn" aria-label="Settings Menu" onclick="toggleMenu()">⚙️</button>
-      </div>
-      <nav class="header-nav" id="headerMenu">
-        <a href="dashboard.html">Home</a>
-        <a href="progress.html">Progress</a>
-        <a href="health-tips.html">Tips</a>
-        <a href="customize.html">Customize</a>
-        <a href="settings.html">Settings</a>
-      </nav>
-    </header>
-
-    <!-- Main Content -->
-    <main class="dashboard-main">
-      <!-- Plant Section -->
-      <section class="plant-section">
-        <div class="plant-display">
-          <div class="plant-large" id="plantEmoji" aria-hidden="true">🌿</div>
-          <h2 id="plantName">Plant Name</h2>
-          <p class="plant-stage" id="plantStage">Seed Stage</p>
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-container">
+      <!-- Header -->
+      <header class="dashboard-header">
+        <div class="header-top">
+          <h1>BloomBuddy</h1>
+          <button
+            class="menu-btn"
+            aria-label="Settings Menu"
+            onclick="toggleMenu()"
+          >
+            ⚙️
+          </button>
         </div>
-        <div class="plant-info">
-          <div class="info-item">
-            <span class="label">Stage</span>
-            <span class="value" id="infoStage">Seed</span>
+        <nav class="header-nav" id="headerMenu">
+          <a href="dashboard.html">Home</a>
+          <a href="progress.html">Progress</a>
+          <a href="health-tips.html">Tips</a>
+          <a href="customize.html">Customize</a>
+          <a href="settings.html">Settings</a>
+        </nav>
+      </header>
+
+      <!-- Main Content -->
+      <main class="dashboard-main">
+        <!-- Plant Section -->
+        <section class="plant-section">
+          <div class="plant-display">
+            <div class="plant-large" id="plantEmoji" aria-hidden="true">🌿</div>
+            <h2 id="plantName">Plant Name</h2>
+            <p class="plant-stage" id="plantStage">Seed Stage</p>
           </div>
-          <div class="info-item">
-            <span class="label">Health</span>
-            <span class="value" id="infoHealth">100%</span>
+          <div class="plant-info">
+            <div class="info-item">
+              <span class="label">Stage</span>
+              <span class="value" id="infoStage">Seed</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Health</span>
+              <span class="value" id="infoHealth">100%</span>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Streak Counter -->
-      <section class="streak-section">
-        <div class="streak-card">
-          <div class="streak-emoji" aria-hidden="true">🔥</div>
-          <div class="streak-text">
-            <p class="streak-label">Gentle Streak</p>
-            <p class="streak-count"><span id="streakCount">0</span> days</p>
+        <!-- Streak Counter -->
+        <section class="streak-section">
+          <div class="streak-card">
+            <div class="streak-emoji" aria-hidden="true">🔥</div>
+            <div class="streak-text">
+              <p class="streak-label">Gentle Streak</p>
+              <p class="streak-count"><span id="streakCount">0</span> days</p>
+            </div>
+            <div class="streak-longest">
+              <p class="small-text">Best: <span id="longestStreak">0</span></p>
+            </div>
           </div>
-          <div class="streak-longest">
-            <p class="small-text">Best: <span id="longestStreak">0</span></p>
+        </section>
+
+        <!-- Today's Goals -->
+        <section class="goals-section">
+          <h3>Today's Goals ✅</h3>
+
+          <div class="goals-list" id="goalsList">
+            <!-- Goals will be populated here -->
           </div>
-        </div>
-      </section>
 
-      <!-- Today's Goals -->
-      <section class="goals-section">
-        <h3>Today's Goals ✅</h3>
-        
-        <div class="goals-list" id="goalsList">
-          <!-- Goals will be populated here -->
-        </div>
+          <button class="btn-add-goal" onclick="navigateTo('add-goal.html')">
+            + Add Goal
+          </button>
+        </section>
 
-        <button class="btn-add-goal" onclick="navigateTo('add-goal.html')">+ Add Goal</button>
-      </section>
+        <!-- Mood Check-in -->
+        <section class="mood-section">
+          <h3>How are you feeling? 🧠</h3>
+          <div class="mood-options">
+            <button class="mood-btn" onclick="logMood(event, '😊')">
+              😊 Happy
+            </button>
+            <button class="mood-btn" onclick="logMood(event, '😌')">
+              😌 Calm
+            </button>
+            <button class="mood-btn" onclick="logMood(event, '😟')">
+              😟 Stressed
+            </button>
+            <button class="mood-btn" onclick="logMood(event, '😴')">
+              😴 Tired
+            </button>
+          </div>
+          <p class="mood-status" id="moodStatus"></p>
+        </section>
 
-      <!-- Mood Check-in -->
-      <section class="mood-section">
-        <h3>How are you feeling? 🧠</h3>
-        <div class="mood-options">
-          <button class="mood-btn" onclick="logMood(event, '😊')">😊 Happy</button>
-          <button class="mood-btn" onclick="logMood(event, '😌')">😌 Calm</button>
-          <button class="mood-btn" onclick="logMood(event, '😟')">😟 Stressed</button>
-          <button class="mood-btn" onclick="logMood(event, '😴')">😴 Tired</button>
-        </div>
-        <p class="mood-status" id="moodStatus"></p>
-      </section>
+        <!-- Quote of the Day -->
+        <section class="quote-section">
+          <p class="quote-text" id="quoteText">"You are allowed to rest."</p>
+          <p class="quote-author" id="quoteAuthor">— BloomBuddy</p>
+        </section>
 
-      <!-- Quote of the Day -->
-      <section class="quote-section">
-        <p class="quote-text" id="quoteText">"You are allowed to rest."</p>
-        <p class="quote-author" id="quoteAuthor">— BloomBuddy</p>
-      </section>
-
-      <!-- Footer Message -->
-      <section class="footer-message">
-        <p id="footerMessage">You're doing great! Keep going 💙</p>
-      </section>
-    </main>
-  </div>
-
-  <!-- End of Day Reflection Modal -->
-  <div class="modal" id="reflectionModal">
-    <div class="modal-content">
-      <button class="modal-close" aria-label="Close modal" onclick="closeModal()">✕</button>
-      <h2>End of Day Reflection 🌙</h2>
-      <p id="reflectionMessage"></p>
-      <div class="reflection-stats">
-        <p id="reflectionStats"></p>
-      </div>
-      <button class="btn-primary" onclick="closeModal()">See you tomorrow! 💚</button>
+        <!-- Footer Message -->
+        <section class="footer-message">
+          <p id="footerMessage">You're doing great! Keep going 💙</p>
+        </section>
+      </main>
     </div>
-  </div>
 
-  <script src="data.js"></script>
-  <script>
-    // Quotes for daily inspiration
-    const quotes = [
-      "You are allowed to rest.",
-      "Progress, not perfection.",
-      "Small steps lead to big changes.",
-      "You're doing better than you think.",
-      "Today is a fresh start.",
-      "Your well-being matters.",
-      "Be kind to yourself.",
-      "Every small win counts.",
-      "You have everything you need.",
-      "Breathe. You've got this."
-    ];
+    <!-- End of Day Reflection Modal -->
+    <div class="modal" id="reflectionModal">
+      <div class="modal-content">
+        <button
+          class="modal-close"
+          aria-label="Close modal"
+          onclick="closeModal()"
+        >
+          ✕
+        </button>
+        <h2>End of Day Reflection 🌙</h2>
+        <p id="reflectionMessage"></p>
+        <div class="reflection-stats">
+          <p id="reflectionStats"></p>
+        </div>
+        <button class="btn-primary" onclick="closeModal()">
+          See you tomorrow! 💚
+        </button>
+      </div>
+    </div>
 
-    // Initialize dashboard
-    function initDashboard() {
-      let user = DataManager.getUser();
-      
-      if (!user || !user.plant.name) {
-        // Redirect to setup if not initialized
-        window.location.href = 'onboarding.html';
-        return;
-      }
+    <script src="data.js"></script>
+    <script>
+      // Quotes for daily inspiration
+      const quotes = [
+        "You are allowed to rest.",
+        "Progress, not perfection.",
+        "Small steps lead to big changes.",
+        "You're doing better than you think.",
+        "Today is a fresh start.",
+        "Your well-being matters.",
+        "Be kind to yourself.",
+        "Every small win counts.",
+        "You have everything you need.",
+        "Breathe. You've got this.",
+      ];
 
-      DataManager.checkStreak();
-      user = DataManager.getUser();
+      // Initialize dashboard
+      function initDashboard() {
+        let user = DataManager.getUser();
 
-      // Display plant info
-      displayPlant(user.plant);
+        if (!user || !user.plant.name) {
+          // Redirect to setup if not initialized
+          window.location.href = "onboarding.html";
+          return;
+        }
 
-      // Display streak
-      displayStreak(user.streak);
+        DataManager.checkStreak();
+        user = DataManager.getUser();
 
-      // Display goals
-      displayGoals(DataManager.getTodayGoals());
+        // Display plant info
+        displayPlant(user.plant);
 
-      // Display mood status
-      const todayMood = DataManager.getTodayMood();
-      if (todayMood) {
-        document.getElementById('moodStatus').textContent = `You logged: ${todayMood}`;
-      } else {
-        document.getElementById('moodStatus').textContent = '';
-      }
+        // Display streak
+        displayStreak(user.streak);
 
-      // Display random quote
-      const quote = quotes[Math.floor(Math.random() * quotes.length)];
-      document.getElementById('quoteText').textContent = `"${quote}"`;
-
-      // Check for end-of-day reflection at night
-      checkForReflection(user);
-      
-      DataManager.applyTheme();
-    }
-
-    function displayPlant(plant) {
-      let currentEmoji = plant.emoji || '🌿';
-      if (plant.stage === 'seed') {
-        currentEmoji = '🌱';
-      } else if (plant.stage === 'sprout') {
-        currentEmoji = '🌿';
-      }
-      
-      document.getElementById('plantEmoji').textContent = currentEmoji;
-      document.getElementById('plantName').textContent = plant.name || 'Your Plant';
-      
-      const stages = {
-        'seed': '🌱 Seed Stage',
-        'sprout': '🌿 Sprout',
-        'bloom': '🌸 Blooming'
-      };
-      document.getElementById('plantStage').textContent = stages[plant.stage] || 'Growing';
-      document.getElementById('infoStage').textContent = plant.stage.charAt(0).toUpperCase() + plant.stage.slice(1);
-      document.getElementById('infoHealth').textContent = plant.health + '%';
-    }
-
-    function displayStreak(streak) {
-      document.getElementById('streakCount').textContent = streak.current;
-      document.getElementById('longestStreak').textContent = streak.longest;
-    }
-
-    function displayGoals(goals) {
-      const goalsList = document.getElementById('goalsList');
-      goalsList.innerHTML = '';
-
-      if (goals.length === 0) {
-        goalsList.innerHTML = '<p class="no-goals">No goals yet. Add one to get started! 🌱</p>';
-        return;
-      }
-
-      goals.forEach(goal => {
-        const goalEl = document.createElement('div');
-        goalEl.className = 'goal-item ' + (goal.completed ? 'completed' : '');
-        goalEl.innerHTML = `
-          <input type="checkbox" ${goal.completed ? 'checked' : ''} onchange="toggleGoal(${goal.id})" aria-label="Toggle goal">
-          <span class="goal-title"></span>
-          <button class="goal-delete" aria-label="Delete goal" onclick="deleteGoal(${goal.id})">✕</button>
-        `;
-        goalEl.querySelector('.goal-title').textContent = goal.title;
-        goalsList.appendChild(goalEl);
-      });
-    }
-
-    function toggleGoal(goalId) {
-      DataManager.toggleGoal(goalId);
-      let user = DataManager.getUser();
-      displayGoals(DataManager.getTodayGoals());
-      displayStreak(user.streak);
-      
-      // Plant grows on goal completion
-      updatePlantGrowth();
-    }
-
-    function deleteGoal(goalId) {
-      showConfirm('Are you sure you want to delete this goal?', () => {
-        DataManager.deleteGoal(goalId);
+        // Display goals
         displayGoals(DataManager.getTodayGoals());
-      }, 'Delete Goal');
-    }
 
-    function logMood(e, mood) {
-      DataManager.addMood(mood);
-      document.querySelectorAll('.mood-btn').forEach(btn => {
-        btn.classList.remove('selected');
-      });
-      e.target.classList.add('selected');
-      document.getElementById('moodStatus').textContent = `You logged: ${mood}`;
-    }
+        // Display mood status
+        const todayMood = DataManager.getTodayMood();
+        if (todayMood) {
+          document.getElementById("moodStatus").textContent =
+            `You logged: ${todayMood}`;
+        } else {
+          document.getElementById("moodStatus").textContent = "";
+        }
 
-    function updatePlantGrowth() {
-      const todayGoals = DataManager.getTodayGoals();
-      const completedToday = todayGoals.filter(g => g.completed).length;
-      
-      if (completedToday >= todayGoals.length && todayGoals.length > 0) {
-        // All goals completed today!
-        DataManager.updatePlantStage('bloom');
-        showMessage('🎉 Your plant bloomed! Amazing work!');
-      } else if (completedToday > 0 && completedToday >= Math.ceil(todayGoals.length / 2)) {
-        DataManager.updatePlantStage('sprout');
-      } else {
-        DataManager.updatePlantStage('seed');
+        // Display random quote
+        const quote = quotes[Math.floor(Math.random() * quotes.length)];
+        document.getElementById("quoteText").textContent = `"${quote}"`;
+
+        // Check for end-of-day reflection at night
+        checkForReflection(user);
+
+        DataManager.applyTheme();
       }
-      
-      let updatedUser = DataManager.getUser();
-      displayPlant(updatedUser.plant);
-    }
 
-    function showMessage(msg) {
-      const oldMsg = document.getElementById('footerMessage').textContent;
-      document.getElementById('footerMessage').textContent = msg;
-      setTimeout(() => {
-        document.getElementById('footerMessage').textContent = oldMsg;
-      }, 3000);
-    }
+      function displayPlant(plant) {
+        let currentEmoji = plant.emoji || "🌿";
+        if (plant.stage === "seed") {
+          currentEmoji = "🌱";
+        } else if (plant.stage === "sprout") {
+          currentEmoji = "🌿";
+        }
 
-    function checkForReflection(user) {
-      const now = new Date();
-      const hour = now.getHours();
+        document.getElementById("plantEmoji").textContent = currentEmoji;
+        document.getElementById("plantName").textContent =
+          plant.name || "Your Plant";
 
-      // Show reflection after 8 PM
-      if (hour >= 20) {
-        const lastReflection = localStorage.getItem(`lastReflection_${user.email}`);
-        const today = new Date().toDateString();
+        const stages = {
+          seed: "🌱 Seed Stage",
+          sprout: "🌿 Sprout",
+          bloom: "🌸 Blooming",
+        };
+        document.getElementById("plantStage").textContent =
+          stages[plant.stage] || "Growing";
+        document.getElementById("infoStage").textContent =
+          plant.stage.charAt(0).toUpperCase() + plant.stage.slice(1);
+        document.getElementById("infoHealth").textContent = plant.health + "%";
+      }
 
-        if (lastReflection !== today) {
-          showReflection(user);
-          localStorage.setItem(`lastReflection_${user.email}`, today);
+      function displayStreak(streak) {
+        document.getElementById("streakCount").textContent = streak.current;
+        document.getElementById("longestStreak").textContent = streak.longest;
+      }
+
+      function displayGoals(goals) {
+        const goalsList = document.getElementById("goalsList");
+        goalsList.innerHTML = "";
+
+        if (goals.length === 0) {
+          goalsList.innerHTML =
+            '<p class="no-goals">No goals yet. Add one to get started! 🌱</p>';
+          return;
+        }
+
+        goals.forEach((goal) => {
+          const goalEl = document.createElement("div");
+          goalEl.className = "goal-item " + (goal.completed ? "completed" : "");
+          goalEl.setAttribute("role", "button");
+          goalEl.setAttribute("tabindex", "0");
+          goalEl.innerHTML = `
+          <input type="checkbox" ${goal.completed ? "checked" : ""} aria-label="Toggle goal">
+          <span class="goal-title"></span>
+          <button class="goal-delete" type="button" aria-label="Delete goal">✕</button>
+        `;
+          goalEl.querySelector(".goal-title").textContent = goal.title;
+
+          const checkbox = goalEl.querySelector('input[type="checkbox"]');
+          const deleteButton = goalEl.querySelector(".goal-delete");
+
+          checkbox.addEventListener("change", () => toggleGoal(goal.id));
+          checkbox.addEventListener("click", (event) =>
+            event.stopPropagation(),
+          );
+
+          deleteButton.addEventListener("click", (event) => {
+            event.stopPropagation();
+            deleteGoal(goal.id);
+          });
+
+          goalEl.addEventListener("click", (event) => {
+            if (
+              event.target.closest(".goal-delete") ||
+              event.target.matches('input[type="checkbox"]')
+            ) {
+              return;
+            }
+            toggleGoal(goal.id);
+          });
+
+          goalEl.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              toggleGoal(goal.id);
+            }
+          });
+
+          goalsList.appendChild(goalEl);
+        });
+      }
+
+      function toggleGoal(goalId) {
+        DataManager.toggleGoal(goalId);
+        let user = DataManager.getUser();
+        displayGoals(DataManager.getTodayGoals());
+        displayStreak(user.streak);
+
+        // Plant grows on goal completion
+        updatePlantGrowth();
+      }
+
+      function deleteGoal(goalId) {
+        showConfirm(
+          "Are you sure you want to delete this goal?",
+          () => {
+            DataManager.deleteGoal(goalId);
+            displayGoals(DataManager.getTodayGoals());
+          },
+          "Delete Goal",
+        );
+      }
+
+      function logMood(e, mood) {
+        DataManager.addMood(mood);
+        document.querySelectorAll(".mood-btn").forEach((btn) => {
+          btn.classList.remove("selected");
+        });
+        e.target.classList.add("selected");
+        document.getElementById("moodStatus").textContent =
+          `You logged: ${mood}`;
+      }
+
+      function updatePlantGrowth() {
+        const todayGoals = DataManager.getTodayGoals();
+        const completedToday = todayGoals.filter((g) => g.completed).length;
+
+        if (completedToday >= todayGoals.length && todayGoals.length > 0) {
+          // All goals completed today!
+          DataManager.updatePlantStage("bloom");
+          showMessage("🎉 Your plant bloomed! Amazing work!");
+        } else if (
+          completedToday > 0 &&
+          completedToday >= Math.ceil(todayGoals.length / 2)
+        ) {
+          DataManager.updatePlantStage("sprout");
+        } else {
+          DataManager.updatePlantStage("seed");
+        }
+
+        let updatedUser = DataManager.getUser();
+        displayPlant(updatedUser.plant);
+      }
+
+      function showMessage(msg) {
+        const oldMsg = document.getElementById("footerMessage").textContent;
+        document.getElementById("footerMessage").textContent = msg;
+        setTimeout(() => {
+          document.getElementById("footerMessage").textContent = oldMsg;
+        }, 3000);
+      }
+
+      function checkForReflection(user) {
+        const now = new Date();
+        const hour = now.getHours();
+
+        // Show reflection after 8 PM
+        if (hour >= 20) {
+          const lastReflection = localStorage.getItem(
+            `lastReflection_${user.email}`,
+          );
+          const today = new Date().toDateString();
+
+          if (lastReflection !== today) {
+            showReflection(user);
+            localStorage.setItem(`lastReflection_${user.email}`, today);
+          }
         }
       }
-    }
 
-    function showReflection(user) {
-      const completed = user.goals.filter(g => g.completed).length;
-      const total = user.goals.length;
+      function showReflection(user) {
+        const completed = user.goals.filter((g) => g.completed).length;
+        const total = user.goals.length;
 
-      const reflectionMsg = completed === total 
-        ? '🎉 You crushed all your goals today!' 
-        : completed > 0
-        ? `✅ You completed ${completed} goal${completed > 1 ? 's' : ''}!`
-        : '💚 You showed up. That\'s what matters.';
+        const reflectionMsg =
+          completed === total
+            ? "🎉 You crushed all your goals today!"
+            : completed > 0
+              ? `✅ You completed ${completed} goal${completed > 1 ? "s" : ""}!`
+              : "💚 You showed up. That's what matters.";
 
-      document.getElementById('reflectionMessage').textContent = reflectionMsg;
-      document.getElementById('reflectionStats').textContent = 
-        `${completed}/${total} goals completed`;
+        document.getElementById("reflectionMessage").textContent =
+          reflectionMsg;
+        document.getElementById("reflectionStats").textContent =
+          `${completed}/${total} goals completed`;
 
-      document.getElementById('reflectionModal').style.display = 'flex';
-    }
+        document.getElementById("reflectionModal").style.display = "flex";
+      }
 
-    function closeModal() {
-      document.getElementById('reflectionModal').style.display = 'none';
-    }
+      function closeModal() {
+        document.getElementById("reflectionModal").style.display = "none";
+      }
 
-    function toggleMenu() {
-      document.getElementById('headerMenu').classList.toggle('active');
-    }
+      function toggleMenu() {
+        document.getElementById("headerMenu").classList.toggle("active");
+      }
 
-    function navigateTo(path) {
-      window.location.href = path;
-    }
+      function navigateTo(path) {
+        window.location.href = path;
+      }
 
-    // Initialize on page load
-    window.addEventListener('load', initDashboard);
-  </script>
-</body>
+      // Initialize on page load
+      window.addEventListener("load", initDashboard);
+    </script>
+  </body>
 </html>

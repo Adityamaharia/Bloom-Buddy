@@ -1,102 +1,207 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Add a new daily goal to track with BloomBuddy.">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Add a new daily goal to track with BloomBuddy."
+    />
+    <script>
+      (function () {
+        try {
+          const savedUser = localStorage.getItem("bloomBuddy_user");
+          const parsedUser = savedUser ? JSON.parse(savedUser) : null;
+          const theme = parsedUser?.preferences?.theme || "day";
+          const normalizedTheme = ["day", "night", "rain", "sunset"].includes(
+            theme,
+          )
+            ? theme
+            : "day";
+          document.documentElement.setAttribute("data-theme", normalizedTheme);
+          if (document.body) {
+            document.body.setAttribute("data-theme", normalizedTheme);
+          }
+          const background =
+            normalizedTheme === "night"
+              ? "#0f172a"
+              : normalizedTheme === "rain"
+                ? "#e6f2ff"
+                : normalizedTheme === "sunset"
+                  ? "#fff3e0"
+                  : "#f8fafc";
+          document.documentElement.style.backgroundColor = background;
+          if (document.body) {
+            document.body.style.backgroundColor = background;
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css" />
     <title>🌿 BloomBuddy - Add Goal</title>
-</head>
-<body class="dashboard-body">
-  <div class="dashboard-container">
-    <header class="dashboard-header">
-      <div class="header-top">
-        <a href="dashboard.html" aria-label="Back to dashboard" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none; margin-right: 12px;">←</a>
-        <h1 style="flex-grow: 1; text-align: left;">Add Goal</h1>
-        <button class="menu-btn" aria-label="Menu" onclick="toggleMenu()">☰</button>
-      </div>
-      <nav class="header-nav" id="headerMenu">
-        <a href="dashboard.html">Home</a>
-        <a href="progress.html">Progress</a>
-        <a href="health-tips.html">Tips</a>
-        <a href="customize.html">Customize</a>
-        <a href="settings.html">Settings</a>
-      </nav>
-    </header>
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-container">
+      <header class="dashboard-header">
+        <div class="header-top">
+          <a
+            href="dashboard.html"
+            aria-label="Back to dashboard"
+            style="
+              color: var(--primary-color);
+              font-size: 1.5rem;
+              text-decoration: none;
+              margin-right: 12px;
+            "
+            >←</a
+          >
+          <h1 style="flex-grow: 1; text-align: left">Add Goal</h1>
+          <button class="menu-btn" aria-label="Menu" onclick="toggleMenu()">
+            ☰
+          </button>
+        </div>
+        <nav class="header-nav" id="headerMenu">
+          <a href="dashboard.html">Home</a>
+          <a href="progress.html">Progress</a>
+          <a href="health-tips.html">Tips</a>
+          <a href="customize.html">Customize</a>
+          <a href="settings.html">Settings</a>
+        </nav>
+      </header>
 
-    <main class="dashboard-main">
-      <section>
-        <form id="goalForm">
-          <div class="form-group">
-            <label for="goalTitle">Goal Title</label>
-            <input type="text" id="goalTitle" placeholder="e.g., Drink water, Meditate..." maxlength="50" required>
-          </div>
-
-          <div class="form-group">
-            <label for="goalIcon">Choose Icon</label>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px;">
-              <button type="button" class="icon-btn" onclick="selectIcon(event, '💧')">💧</button>
-              <button type="button" class="icon-btn" onclick="selectIcon(event, '🧘')">🧘</button>
-              <button type="button" class="icon-btn" onclick="selectIcon(event, '📝')">📝</button>
-              <button type="button" class="icon-btn" onclick="selectIcon(event, '📖')">📖</button>
-              <button type="button" class="icon-btn" onclick="selectIcon(event, '🌤️')">🌤️</button>
-              <button type="button" class="icon-btn" onclick="selectIcon(event, '💪')">💪</button>
-              <button type="button" class="icon-btn" onclick="selectIcon(event, '🍎')">🍎</button>
-              <button type="button" class="icon-btn" onclick="selectIcon(event, '😴')">😴</button>
+      <main class="dashboard-main">
+        <section>
+          <form id="goalForm">
+            <div class="form-group">
+              <label for="goalTitle">Goal Title</label>
+              <input
+                type="text"
+                id="goalTitle"
+                placeholder="e.g., Drink water, Meditate..."
+                maxlength="50"
+                required
+              />
             </div>
-            <input type="hidden" id="goalIcon" value="">
-          </div>
 
-          <div class="form-group checkbox">
-            <input type="checkbox" id="dailyReminder" checked>
-            <label for="dailyReminder">Daily reminder</label>
-          </div>
+            <div class="form-group">
+              <label for="goalIcon">Choose Icon</label>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(4, 1fr);
+                  gap: 10px;
+                  margin-top: 12px;
+                "
+              >
+                <button
+                  type="button"
+                  class="icon-btn"
+                  onclick="selectIcon(event, '💧')"
+                >
+                  💧
+                </button>
+                <button
+                  type="button"
+                  class="icon-btn"
+                  onclick="selectIcon(event, '🧘')"
+                >
+                  🧘
+                </button>
+                <button
+                  type="button"
+                  class="icon-btn"
+                  onclick="selectIcon(event, '📝')"
+                >
+                  📝
+                </button>
+                <button
+                  type="button"
+                  class="icon-btn"
+                  onclick="selectIcon(event, '📖')"
+                >
+                  📖
+                </button>
+                <button
+                  type="button"
+                  class="icon-btn"
+                  onclick="selectIcon(event, '🌤️')"
+                >
+                  🌤️
+                </button>
+                <button
+                  type="button"
+                  class="icon-btn"
+                  onclick="selectIcon(event, '💪')"
+                >
+                  💪
+                </button>
+                <button
+                  type="button"
+                  class="icon-btn"
+                  onclick="selectIcon(event, '🍎')"
+                >
+                  🍎
+                </button>
+                <button
+                  type="button"
+                  class="icon-btn"
+                  onclick="selectIcon(event, '😴')"
+                >
+                  😴
+                </button>
+              </div>
+              <input type="hidden" id="goalIcon" value="" />
+            </div>
 
-          <button type="submit" class="btn-primary">Add Goal</button>
-        </form>
-      </section>
-    </main>
-  </div>
+            <div class="form-group checkbox">
+              <input type="checkbox" id="dailyReminder" checked />
+              <label for="dailyReminder">Daily reminder</label>
+            </div>
 
-  <script src="data.js"></script>
-  <script>
-    let selectedIcon = '';
+            <button type="submit" class="btn-primary">Add Goal</button>
+          </form>
+        </section>
+      </main>
+    </div>
 
-    function toggleMenu() {
-      document.getElementById('headerMenu').classList.toggle('active');
-    }
+    <script src="data.js"></script>
+    <script>
+      let selectedIcon = "";
 
-    function selectIcon(e, icon) {
-      selectedIcon = icon;
-      document.querySelectorAll('.icon-btn').forEach(btn => {
-        btn.style.backgroundColor = 'white';
+      function toggleMenu() {
+        document.getElementById("headerMenu").classList.toggle("active");
+      }
+
+      function selectIcon(e, icon) {
+        selectedIcon = icon;
+        document.querySelectorAll(".icon-btn").forEach((btn) => {
+          btn.style.backgroundColor = "white";
+        });
+        e.target.style.backgroundColor = "rgba(46, 139, 87, 0.1)";
+        document.getElementById("goalIcon").value = icon;
+      }
+
+      document.getElementById("goalForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById("goalTitle").value.trim();
+        if (!title) return;
+
+        const icon = selectedIcon || "✓";
+        const daily = document.getElementById("dailyReminder").checked;
+
+        DataManager.addGoal({
+          title: `${icon} ${title}`,
+          daily: daily,
+          completed: false,
+        });
+
+        window.location.href = "dashboard.html";
       });
-      e.target.style.backgroundColor = 'rgba(46, 139, 87, 0.1)';
-      document.getElementById('goalIcon').value = icon;
-    }
 
-    document.getElementById('goalForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      const title = document.getElementById('goalTitle').value.trim();
-      if (!title) return;
-
-      const icon = selectedIcon || '✓';
-      const daily = document.getElementById('dailyReminder').checked;
-
-      DataManager.addGoal({
-        title: `${icon} ${title}`,
-        daily: daily,
-        completed: false
+      window.addEventListener("load", () => {
+        DataManager.applyTheme();
       });
-
-      window.location.href = 'dashboard.html';
-    });
-
-    window.addEventListener('load', () => {
-      DataManager.applyTheme();
-    });
-  </script>
-
-</body>
+    </script>
+  </body>
 </html>

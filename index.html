@@ -1,19 +1,52 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="BloomBuddy is a web app to help you track habits and grow your virtual plant.">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="BloomBuddy is a web app to help you track habits and grow your virtual plant."
+    />
+    <script>
+      (function () {
+        try {
+          const savedUser = localStorage.getItem("bloomBuddy_user");
+          const parsedUser = savedUser ? JSON.parse(savedUser) : null;
+          const theme = parsedUser?.preferences?.theme || "day";
+          const normalizedTheme = ["day", "night", "rain", "sunset"].includes(
+            theme,
+          )
+            ? theme
+            : "day";
+          document.documentElement.setAttribute("data-theme", normalizedTheme);
+          if (document.body) {
+            document.body.setAttribute("data-theme", normalizedTheme);
+          }
+          const background =
+            normalizedTheme === "night"
+              ? "#0f172a"
+              : normalizedTheme === "rain"
+                ? "#e6f2ff"
+                : normalizedTheme === "sunset"
+                  ? "#fff3e0"
+                  : "#f8fafc";
+          document.documentElement.style.backgroundColor = background;
+          if (document.body) {
+            document.body.style.backgroundColor = background;
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css" />
     <title>🌿 BloomBuddy</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="welcome-msg">
-        <h1 aria-hidden="true">🌿</h1>
-        <h1>BloomBuddy</h1>
-        <p>“Grow your well-being, one step at a time 🌱”</p>
+      <h1 aria-hidden="true">🌿</h1>
+      <h1>BloomBuddy</h1>
+      <p>“Grow your well-being, one step at a time 🌱”</p>
     </div>
     <script src="data.js"></script>
     <script src="app.js"></script>
-</body>
+  </body>
 </html>

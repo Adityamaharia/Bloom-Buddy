@@ -1,219 +1,294 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Set up your BloomBuddy plant and initial goals.">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Set up your BloomBuddy plant and initial goals."
+    />
+    <script>
+      (function () {
+        try {
+          const savedUser = localStorage.getItem("bloomBuddy_user");
+          const parsedUser = savedUser ? JSON.parse(savedUser) : null;
+          const theme = parsedUser?.preferences?.theme || "day";
+          const normalizedTheme = ["day", "night", "rain", "sunset"].includes(
+            theme,
+          )
+            ? theme
+            : "day";
+          document.documentElement.setAttribute("data-theme", normalizedTheme);
+          if (document.body) {
+            document.body.setAttribute("data-theme", normalizedTheme);
+          }
+          const background =
+            normalizedTheme === "night"
+              ? "#0f172a"
+              : normalizedTheme === "rain"
+                ? "#e6f2ff"
+                : normalizedTheme === "sunset"
+                  ? "#fff3e0"
+                  : "#f8fafc";
+          document.documentElement.style.backgroundColor = background;
+          if (document.body) {
+            document.body.style.backgroundColor = background;
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css" />
     <title>🌿 BloomBuddy - Plant Setup</title>
-</head>
-<body>
-  <div class="setup-container">
-    <div class="setup-card">
-      <!-- Step 1: Choose Plant -->
-      <div class="setup-screen active" id="step1">
-        <h2>Choose Your Plant 🌱</h2>
-        <p class="subtitle">Pick a plant to grow with you on your wellness journey</p>
+  </head>
+  <body>
+    <div class="setup-container">
+      <div class="setup-card">
+        <!-- Step 1: Choose Plant -->
+        <div class="setup-screen active" id="step1">
+          <h2>Choose Your Plant 🌱</h2>
+          <p class="subtitle">
+            Pick a plant to grow with you on your wellness journey
+          </p>
 
-        <div class="plant-grid">
-          <div class="plant-option" onclick="selectPlant(event, 'basic', '🌿')">
-            <div class="plant-emoji">🌿</div>
-            <p>Basic Plant</p>
+          <div class="plant-grid">
+            <div
+              class="plant-option"
+              onclick="selectPlant(event, 'basic', '🌿')"
+            >
+              <div class="plant-emoji">🌿</div>
+              <p>Basic Plant</p>
+            </div>
+            <div
+              class="plant-option"
+              onclick="selectPlant(event, 'flower', '🌸')"
+            >
+              <div class="plant-emoji">🌸</div>
+              <p>Flower</p>
+            </div>
+            <div
+              class="plant-option"
+              onclick="selectPlant(event, 'cactus', '🌵')"
+            >
+              <div class="plant-emoji">🌵</div>
+              <p>Cactus</p>
+            </div>
           </div>
-          <div class="plant-option" onclick="selectPlant(event, 'flower', '🌸')">
-            <div class="plant-emoji">🌸</div>
-            <p>Flower</p>
-          </div>
-          <div class="plant-option" onclick="selectPlant(event, 'cactus', '🌵')">
-            <div class="plant-emoji">🌵</div>
-            <p>Cactus</p>
-          </div>
-        </div>
 
-        <button class="btn-primary" onclick="nextStep()" disabled id="nextBtn1">Next</button>
-      </div>
-
-      <!-- Step 2: Name Plant -->
-      <div class="setup-screen" id="step2">
-        <h2>Name Your Plant 💚</h2>
-        <p class="subtitle">Give it a name to make it feel special</p>
-
-        <div class="plant-preview">
-          <div class="plant-display" id="plantPreview" aria-hidden="true">🌿</div>
-        </div>
-
-        <div class="form-group">
-          <input 
-            type="text" 
-            id="plantName" 
-            placeholder="e.g., Luna, Hope, Bloom..."
-            maxlength="20"
-            oninput="updatePlantPreview()"
+          <button
+            class="btn-primary"
+            onclick="nextStep()"
+            disabled
+            id="nextBtn1"
           >
-          <p class="char-count"><span id="charCount">0</span>/20</p>
+            Next
+          </button>
         </div>
 
-        <p class="example">Examples: Luna 🌙, Hope 🌿, Joy 💛, Peace 🕊️</p>
+        <!-- Step 2: Name Plant -->
+        <div class="setup-screen" id="step2">
+          <h2>Name Your Plant 💚</h2>
+          <p class="subtitle">Give it a name to make it feel special</p>
 
-        <button class="btn-primary" onclick="nextStep()" disabled id="nextBtn2">Continue</button>
-      </div>
+          <div class="plant-preview">
+            <div class="plant-display" id="plantPreview" aria-hidden="true">
+              🌿
+            </div>
+          </div>
 
-      <!-- Step 3: First Goals -->
-      <div class="setup-screen" id="step3">
-        <h2>First Goals 🎯</h2>
-        <p class="subtitle">Start with 2–3 simple goals. You can add more later.</p>
+          <div class="form-group">
+            <input
+              type="text"
+              id="plantName"
+              placeholder="e.g., Luna, Hope, Bloom..."
+              maxlength="20"
+              oninput="updatePlantPreview()"
+            />
+            <p class="char-count"><span id="charCount">0</span>/20</p>
+          </div>
 
-        <div class="goals-suggestions">
-          <div class="goal-suggestion" onclick="toggleGoalSuggestion(this)">
-            <input type="checkbox" class="goal-checkbox">
-            <span class="goal-text">💧 Drink water</span>
-          </div>
-          <div class="goal-suggestion" onclick="toggleGoalSuggestion(this)">
-            <input type="checkbox" class="goal-checkbox">
-            <span class="goal-text">🌤️ Go outside</span>
-          </div>
-          <div class="goal-suggestion" onclick="toggleGoalSuggestion(this)">
-            <input type="checkbox" class="goal-checkbox">
-            <span class="goal-text">📝 Journal</span>
-          </div>
-          <div class="goal-suggestion" onclick="toggleGoalSuggestion(this)">
-            <input type="checkbox" class="goal-checkbox">
-            <span class="goal-text">🧘 Meditation</span>
-          </div>
-          <div class="goal-suggestion" onclick="toggleGoalSuggestion(this)">
-            <input type="checkbox" class="goal-checkbox">
-            <span class="goal-text">📖 Read</span>
-          </div>
-          <div class="goal-suggestion" onclick="toggleGoalSuggestion(this)">
-            <input type="checkbox" class="goal-checkbox">
-            <span class="goal-text">💪 Exercise</span>
-          </div>
+          <p class="example">Examples: Luna 🌙, Hope 🌿, Joy 💛, Peace 🕊️</p>
+
+          <button
+            class="btn-primary"
+            onclick="nextStep()"
+            disabled
+            id="nextBtn2"
+          >
+            Continue
+          </button>
         </div>
 
-        <div class="add-custom-goal">
-          <input type="text" id="customGoal" placeholder="Add your own goal...">
-          <button type="button" onclick="addCustomGoal()">+</button>
+        <!-- Step 3: First Goals -->
+        <div class="setup-screen" id="step3">
+          <h2>First Goals 🎯</h2>
+          <p class="subtitle">
+            Start with 2–3 simple goals. You can add more later.
+          </p>
+
+          <div class="goals-suggestions">
+            <div class="goal-suggestion" onclick="toggleGoalSuggestion(this)">
+              <input type="checkbox" class="goal-checkbox" />
+              <span class="goal-text">💧 Drink water</span>
+            </div>
+            <div class="goal-suggestion" onclick="toggleGoalSuggestion(this)">
+              <input type="checkbox" class="goal-checkbox" />
+              <span class="goal-text">🌤️ Go outside</span>
+            </div>
+            <div class="goal-suggestion" onclick="toggleGoalSuggestion(this)">
+              <input type="checkbox" class="goal-checkbox" />
+              <span class="goal-text">📝 Journal</span>
+            </div>
+            <div class="goal-suggestion" onclick="toggleGoalSuggestion(this)">
+              <input type="checkbox" class="goal-checkbox" />
+              <span class="goal-text">🧘 Meditation</span>
+            </div>
+            <div class="goal-suggestion" onclick="toggleGoalSuggestion(this)">
+              <input type="checkbox" class="goal-checkbox" />
+              <span class="goal-text">📖 Read</span>
+            </div>
+            <div class="goal-suggestion" onclick="toggleGoalSuggestion(this)">
+              <input type="checkbox" class="goal-checkbox" />
+              <span class="goal-text">💪 Exercise</span>
+            </div>
+          </div>
+
+          <div class="add-custom-goal">
+            <input
+              type="text"
+              id="customGoal"
+              placeholder="Add your own goal..."
+            />
+            <button type="button" onclick="addCustomGoal()">+</button>
+          </div>
+
+          <div id="customGoalsList"></div>
+
+          <button class="btn-primary" onclick="completeSetup()">
+            Start Your Journey 🌱
+          </button>
         </div>
-
-        <div id="customGoalsList"></div>
-
-        <button class="btn-primary" onclick="completeSetup()">Start Your Journey 🌱</button>
       </div>
     </div>
-  </div>
 
-  <script src="data.js"></script>
-  <script>
-    let selectedPlant = null;
-    let selectedPlantEmoji = null;
-    let selectedGoals = [];
-    let currentStep = 1;
+    <script src="data.js"></script>
+    <script>
+      let selectedPlant = null;
+      let selectedPlantEmoji = null;
+      let selectedGoals = [];
+      let currentStep = 1;
 
-    function selectPlant(e, type, emoji) {
-      selectedPlant = type;
-      selectedPlantEmoji = emoji;
-      
-      document.querySelectorAll('.plant-option').forEach(opt => {
-        opt.classList.remove('selected');
-      });
-      e.target.closest('.plant-option').classList.add('selected');
-      document.getElementById('nextBtn1').disabled = false;
-    }
+      function selectPlant(e, type, emoji) {
+        selectedPlant = type;
+        selectedPlantEmoji = emoji;
 
-    function updatePlantPreview() {
-      const name = document.getElementById('plantName').value;
-      const charCount = name.length;
-      document.getElementById('charCount').textContent = charCount;
-      document.getElementById('nextBtn2').disabled = name.length === 0;
-    }
-
-    function toggleGoalSuggestion(element) {
-      const checkbox = element.querySelector('.goal-checkbox');
-      const text = element.querySelector('.goal-text').textContent;
-      
-      checkbox.checked = !checkbox.checked;
-      element.classList.toggle('selected');
-      
-      if (checkbox.checked) {
-        selectedGoals.push(text);
-      } else {
-        selectedGoals = selectedGoals.filter(g => g !== text);
+        document.querySelectorAll(".plant-option").forEach((opt) => {
+          opt.classList.remove("selected");
+        });
+        e.target.closest(".plant-option").classList.add("selected");
+        document.getElementById("nextBtn1").disabled = false;
       }
-    }
 
-    function addCustomGoal() {
-      const input = document.getElementById('customGoal');
-      const goal = input.value.trim();
-      
-      if (goal) {
-        // Create goal element
-        const goalsList = document.getElementById('customGoalsList');
-        const goalEl = document.createElement('div');
-        goalEl.className = 'custom-goal-item';
-        goalEl.innerHTML = `
+      function updatePlantPreview() {
+        const name = document.getElementById("plantName").value;
+        const charCount = name.length;
+        document.getElementById("charCount").textContent = charCount;
+        document.getElementById("nextBtn2").disabled = name.length === 0;
+      }
+
+      function toggleGoalSuggestion(element) {
+        const checkbox = element.querySelector(".goal-checkbox");
+        const text = element.querySelector(".goal-text").textContent;
+
+        checkbox.checked = !checkbox.checked;
+        element.classList.toggle("selected");
+
+        if (checkbox.checked) {
+          selectedGoals.push(text);
+        } else {
+          selectedGoals = selectedGoals.filter((g) => g !== text);
+        }
+      }
+
+      function addCustomGoal() {
+        const input = document.getElementById("customGoal");
+        const goal = input.value.trim();
+
+        if (goal) {
+          // Create goal element
+          const goalsList = document.getElementById("customGoalsList");
+          const goalEl = document.createElement("div");
+          goalEl.className = "custom-goal-item";
+          goalEl.innerHTML = `
           <span class="custom-goal-text"></span>
           <button onclick="removeCustomGoal(this)">✕</button>
         `;
-        goalEl.querySelector('.custom-goal-text').textContent = goal;
-        goalsList.appendChild(goalEl);
-        
-        selectedGoals.push(goal);
-        input.value = '';
-      }
-    }
+          goalEl.querySelector(".custom-goal-text").textContent = goal;
+          goalsList.appendChild(goalEl);
 
-    function removeCustomGoal(btn) {
-      const goalText = btn.parentElement.querySelector('.custom-goal-text').textContent;
-      const idx = selectedGoals.indexOf(goalText);
-      if (idx > -1) {
-        selectedGoals.splice(idx, 1);
-      }
-      btn.parentElement.remove();
-    }
-
-    function nextStep() {
-      const screens = document.querySelectorAll('.setup-screen');
-      screens[currentStep - 1].classList.remove('active');
-      currentStep++;
-      screens[currentStep - 1].classList.add('active');
-    }
-
-    window.addEventListener('load', () => {
-      document.querySelectorAll('.plant-option, .goal-suggestion').forEach(el => {
-        el.setAttribute('tabindex', '0');
-        el.setAttribute('role', 'button');
-        el.addEventListener('keydown', e => {
-          if (e.key === 'Enter') el.click();
-        });
-      });
-      DataManager.applyTheme();
-    });
-
-    function completeSetup() {
-      let user = DataManager.getUser();
-      if (!user) {
-        window.location.href = 'login.html';
-        return;
+          selectedGoals.push(goal);
+          input.value = "";
+        }
       }
 
-      // Save plant
-      DataManager.setPlant(selectedPlant, document.getElementById('plantName').value, selectedPlantEmoji);
+      function removeCustomGoal(btn) {
+        const goalText =
+          btn.parentElement.querySelector(".custom-goal-text").textContent;
+        const idx = selectedGoals.indexOf(goalText);
+        if (idx > -1) {
+          selectedGoals.splice(idx, 1);
+        }
+        btn.parentElement.remove();
+      }
 
-      // Add goals
-      selectedGoals.forEach(goalText => {
-        DataManager.addGoal({
-          title: goalText,
-          daily: true,
-          completed: false
-        });
+      function nextStep() {
+        const screens = document.querySelectorAll(".setup-screen");
+        screens[currentStep - 1].classList.remove("active");
+        currentStep++;
+        screens[currentStep - 1].classList.add("active");
+      }
+
+      window.addEventListener("load", () => {
+        document
+          .querySelectorAll(".plant-option, .goal-suggestion")
+          .forEach((el) => {
+            el.setAttribute("tabindex", "0");
+            el.setAttribute("role", "button");
+            el.addEventListener("keydown", (e) => {
+              if (e.key === "Enter") el.click();
+            });
+          });
+        DataManager.applyTheme();
       });
 
-      // Initialize streak
-      DataManager.updateStreak();
+      function completeSetup() {
+        let user = DataManager.getUser();
+        if (!user) {
+          window.location.href = "login.html";
+          return;
+        }
 
-      // Redirect to dashboard
-      window.location.href = 'dashboard.html';
-    }
-  </script>
-</body>
+        // Save plant
+        DataManager.setPlant(
+          selectedPlant,
+          document.getElementById("plantName").value,
+          selectedPlantEmoji,
+        );
+
+        // Add goals
+        selectedGoals.forEach((goalText) => {
+          DataManager.addGoal({
+            title: goalText,
+            daily: true,
+            completed: false,
+          });
+        });
+
+        // Initialize streak
+        DataManager.updateStreak();
+
+        // Redirect to dashboard
+        window.location.href = "dashboard.html";
+      }
+    </script>
+  </body>
 </html>

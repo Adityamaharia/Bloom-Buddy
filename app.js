@@ -16,7 +16,12 @@ window.addEventListener("load", () => {
   // redirect
   setTimeout(() => {
     sessionStorage.setItem("visited", "true");
-    if (typeof DataManager !== 'undefined' && DataManager.getUser()) {
+    const isLoggedIn = sessionStorage.getItem("loggedIn") === "true";
+    if (
+      typeof DataManager !== "undefined" &&
+      isLoggedIn &&
+      DataManager.getUser()
+    ) {
       window.location.href = "dashboard.html";
     } else {
       window.location.href = "login.html";

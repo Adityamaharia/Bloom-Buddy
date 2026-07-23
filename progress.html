@@ -1,189 +1,263 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Track your BloomBuddy progress, completion rates, and mood trends over time.">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Track your BloomBuddy progress, completion rates, and mood trends over time."
+    />
+    <script>
+      (function () {
+        try {
+          const savedUser = localStorage.getItem("bloomBuddy_user");
+          const parsedUser = savedUser ? JSON.parse(savedUser) : null;
+          const theme = parsedUser?.preferences?.theme || "day";
+          const normalizedTheme = ["day", "night", "rain", "sunset"].includes(
+            theme,
+          )
+            ? theme
+            : "day";
+          document.documentElement.setAttribute("data-theme", normalizedTheme);
+          if (document.body) {
+            document.body.setAttribute("data-theme", normalizedTheme);
+          }
+          const background =
+            normalizedTheme === "night"
+              ? "#0f172a"
+              : normalizedTheme === "rain"
+                ? "#e6f2ff"
+                : normalizedTheme === "sunset"
+                  ? "#fff3e0"
+                  : "#f8fafc";
+          document.documentElement.style.backgroundColor = background;
+          if (document.body) {
+            document.body.style.backgroundColor = background;
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css" />
     <title>🌿 BloomBuddy - Progress</title>
-</head>
-<body class="dashboard-body">
-  <div class="dashboard-container">
-    <header class="dashboard-header">
-      <div class="header-top">
-        <a href="dashboard.html" aria-label="Back to dashboard" style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none; margin-right: 12px;">←</a>
-        <h1 style="flex-grow: 1; text-align: left;">Progress</h1>
-        <button class="menu-btn" aria-label="Menu" onclick="toggleMenu()">☰</button>
-      </div>
-      <nav class="header-nav" id="headerMenu">
-        <a href="dashboard.html">Home</a>
-        <a href="progress.html" class="active">Progress</a>
-        <a href="health-tips.html">Tips</a>
-        <a href="customize.html">Customize</a>
-        <a href="settings.html">Settings</a>
-      </nav>
-    </header>
-
-    <main class="dashboard-main">
-      <!-- Plant Journey -->
-      <section>
-        <h3>Plant Journey 🌱</h3>
-        <div class="growth-stage">
-          <div class="stage-item">
-            <div class="stage-emoji">🌱</div>
-            <p>Seed</p>
-          </div>
-          <div class="stage-item">
-            <div class="stage-emoji">🌿</div>
-            <p>Sprout</p>
-          </div>
-          <div class="stage-item active" id="currentStage">
-            <div class="stage-emoji">🌸</div>
-            <p>Bloom</p>
-          </div>
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-container">
+      <header class="dashboard-header">
+        <div class="header-top">
+          <a
+            href="dashboard.html"
+            aria-label="Back to dashboard"
+            style="
+              color: var(--primary-color);
+              font-size: 1.5rem;
+              text-decoration: none;
+              margin-right: 12px;
+            "
+            >←</a
+          >
+          <h1 style="flex-grow: 1; text-align: left">Progress</h1>
+          <button class="menu-btn" aria-label="Menu" onclick="toggleMenu()">
+            ☰
+          </button>
         </div>
-      </section>
+        <nav class="header-nav" id="headerMenu">
+          <a href="dashboard.html">Home</a>
+          <a href="progress.html" class="active">Progress</a>
+          <a href="health-tips.html">Tips</a>
+          <a href="customize.html">Customize</a>
+          <a href="settings.html">Settings</a>
+        </nav>
+      </header>
 
-      <!-- Stats -->
-      <section>
-        <h3>Your Stats 📊</h3>
-        <div class="stat-grid">
-          <div class="stat-card">
-            <div class="stat-number" id="totalCompleted">0</div>
-            <div class="stat-label">Goals Completed</div>
+      <main class="dashboard-main">
+        <!-- Plant Journey -->
+        <section>
+          <h3>Plant Journey 🌱</h3>
+          <div class="growth-stage">
+            <div class="stage-item">
+              <div class="stage-emoji">🌱</div>
+              <p>Seed</p>
+            </div>
+            <div class="stage-item">
+              <div class="stage-emoji">🌿</div>
+              <p>Sprout</p>
+            </div>
+            <div class="stage-item active" id="currentStage">
+              <div class="stage-emoji">🌸</div>
+              <p>Bloom</p>
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-number" id="completionRate">0%</div>
-            <div class="stat-label">Completion Rate</div>
+        </section>
+
+        <!-- Stats -->
+        <section>
+          <h3>Your Stats 📊</h3>
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-number" id="totalCompleted">0</div>
+              <div class="stat-label">Goals Completed</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="completionRate">0%</div>
+              <div class="stat-label">Completion Rate</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="longestStreak">0</div>
+              <div class="stat-label">Longest Streak</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="weekConsistency">0%</div>
+              <div class="stat-label">Week Consistency</div>
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-number" id="longestStreak">0</div>
-            <div class="stat-label">Longest Streak</div>
+        </section>
+
+        <!-- Mood Trends -->
+        <section>
+          <h3>Mood Trends 📈</h3>
+          <div id="moodTrends">
+            <p style="color: var(--text-secondary); text-align: center">
+              Loading mood data...
+            </p>
           </div>
-          <div class="stat-card">
-            <div class="stat-number" id="weekConsistency">0%</div>
-            <div class="stat-label">Week Consistency</div>
+        </section>
+
+        <!-- Insights -->
+        <section>
+          <h3>Your Insights 🧠</h3>
+          <div id="insights">
+            <p
+              id="insight1"
+              style="color: var(--text-secondary); margin-bottom: 12px"
+            ></p>
+            <p
+              id="insight2"
+              style="color: var(--text-secondary); margin-bottom: 12px"
+            ></p>
+            <p id="insight3" style="color: var(--text-secondary)"></p>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
+    </div>
 
-      <!-- Mood Trends -->
-      <section>
-        <h3>Mood Trends 📈</h3>
-        <div id="moodTrends">
-          <p style="color: var(--text-secondary); text-align: center;">Loading mood data...</p>
-        </div>
-      </section>
+    <script src="data.js"></script>
+    <script>
+      function toggleMenu() {
+        document.getElementById("headerMenu").classList.toggle("active");
+      }
 
-      <!-- Insights -->
-      <section>
-        <h3>Your Insights 🧠</h3>
-        <div id="insights">
-          <p id="insight1" style="color: var(--text-secondary); margin-bottom: 12px;"></p>
-          <p id="insight2" style="color: var(--text-secondary); margin-bottom: 12px;"></p>
-          <p id="insight3" style="color: var(--text-secondary);"></p>
-        </div>
-      </section>
-    </main>
-  </div>
+      function initProgress() {
+        let user = DataManager.getUser();
+        if (!user) return;
 
-  <script src="data.js"></script>
-  <script>
-    function toggleMenu() {
-      document.getElementById('headerMenu').classList.toggle('active');
-    }
-
-    function initProgress() {
-      let user = DataManager.getUser();
-      if (!user) return;
-
-      // Update plant stage indicator
-      const stageIndex = { 'seed': 0, 'sprout': 1, 'bloom': 2 };
-      const current = user.plant ? (stageIndex[user.plant.stage] || 0) : 0;
-      const stages = document.querySelectorAll('.stage-item');
-      stages.forEach((stage, i) => {
-        stage.classList.remove('active');
-        if (i === current) stage.classList.add('active');
-      });
-
-      // Calculate stats
-      const totalCompleted = user.goals.filter(g => g.completed).length;
-      const totalGoals = user.goals.length;
-      const completionRate = totalGoals > 0 ? Math.round((totalCompleted / totalGoals) * 100) : 0;
-
-      document.getElementById('totalCompleted').textContent = totalCompleted;
-      document.getElementById('completionRate').textContent = completionRate + '%';
-      document.getElementById('longestStreak').textContent = user.streak.longest;
-
-      // Week consistency (rough calculation)
-      const weekConsistency = Math.min(Math.round((user.streak.current / 7) * 100), 100);
-      document.getElementById('weekConsistency').textContent = weekConsistency + '%';
-
-      // Mood trends
-      const moodCounts = {};
-      user.moods.forEach(mood => {
-        moodCounts[mood.mood] = (moodCounts[mood.mood] || 0) + 1;
-      });
-
-      const moodTrendsDiv = document.getElementById('moodTrends');
-      moodTrendsDiv.innerHTML = '';
-      if (Object.keys(moodCounts).length === 0) {
-        moodTrendsDiv.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No mood data yet. Log your mood daily!</p>';
-      } else {
-        Object.entries(moodCounts).forEach(([mood, count]) => {
-          const p = document.createElement('p');
-          p.style.marginBottom = '8px';
-          const strong = document.createElement('strong');
-          strong.textContent = mood;
-          p.appendChild(strong);
-          p.appendChild(document.createTextNode(` — logged ${count} time${count > 1 ? 's' : ''}`));
-          moodTrendsDiv.appendChild(p);
+        // Update plant stage indicator
+        const stageIndex = { seed: 0, sprout: 1, bloom: 2 };
+        const current = user.plant ? stageIndex[user.plant.stage] || 0 : 0;
+        const stages = document.querySelectorAll(".stage-item");
+        stages.forEach((stage, i) => {
+          stage.classList.remove("active");
+          if (i === current) stage.classList.add("active");
         });
+
+        // Calculate stats
+        const totalCompleted = user.goals.filter((g) => g.completed).length;
+        const totalGoals = user.goals.length;
+        const completionRate =
+          totalGoals > 0 ? Math.round((totalCompleted / totalGoals) * 100) : 0;
+
+        document.getElementById("totalCompleted").textContent = totalCompleted;
+        document.getElementById("completionRate").textContent =
+          completionRate + "%";
+        document.getElementById("longestStreak").textContent =
+          user.streak.longest;
+
+        // Week consistency (rough calculation)
+        const weekConsistency = Math.min(
+          Math.round((user.streak.current / 7) * 100),
+          100,
+        );
+        document.getElementById("weekConsistency").textContent =
+          weekConsistency + "%";
+
+        // Mood trends
+        const moodCounts = {};
+        user.moods.forEach((mood) => {
+          moodCounts[mood.mood] = (moodCounts[mood.mood] || 0) + 1;
+        });
+
+        const moodTrendsDiv = document.getElementById("moodTrends");
+        moodTrendsDiv.innerHTML = "";
+        if (Object.keys(moodCounts).length === 0) {
+          moodTrendsDiv.innerHTML =
+            '<p style="color: var(--text-secondary); text-align: center;">No mood data yet. Log your mood daily!</p>';
+        } else {
+          Object.entries(moodCounts).forEach(([mood, count]) => {
+            const p = document.createElement("p");
+            p.style.marginBottom = "8px";
+            const strong = document.createElement("strong");
+            strong.textContent = mood;
+            p.appendChild(strong);
+            p.appendChild(
+              document.createTextNode(
+                ` — logged ${count} time${count > 1 ? "s" : ""}`,
+              ),
+            );
+            moodTrendsDiv.appendChild(p);
+          });
+        }
+
+        // Generate insights
+        const insights = generateInsights(user, moodCounts, completionRate);
+        document.getElementById("insight1").textContent = insights[0];
+        document.getElementById("insight2").textContent = insights[1];
+        document.getElementById("insight3").textContent = insights[2];
       }
 
-      // Generate insights
-      const insights = generateInsights(user, moodCounts, completionRate);
-      document.getElementById('insight1').textContent = insights[0];
-      document.getElementById('insight2').textContent = insights[1];
-      document.getElementById('insight3').textContent = insights[2];
-    }
+      function generateInsights(user, moodCounts, completionRate) {
+        const insights = [];
 
-    function generateInsights(user, moodCounts, completionRate) {
-      const insights = [];
+        if (completionRate > 80) {
+          insights.push("✨ You're crushing it! Your consistency is amazing.");
+        } else if (completionRate > 50) {
+          insights.push("📈 You're making great progress! Keep it up.");
+        } else {
+          insights.push(
+            "🌱 Every small step counts. Be patient with yourself.",
+          );
+        }
 
-      if (completionRate > 80) {
-        insights.push('✨ You\'re crushing it! Your consistency is amazing.');
-      } else if (completionRate > 50) {
-        insights.push('📈 You\'re making great progress! Keep it up.');
-      } else {
-        insights.push('🌱 Every small step counts. Be patient with yourself.');
+        // Mood insight
+        if (Object.keys(moodCounts).length > 0) {
+          const mostFrequentMood = Object.entries(moodCounts).sort(
+            (a, b) => b[1] - a[1],
+          )[0];
+          insights.push(
+            `💬 You felt ${mostFrequentMood[0]} most frequently this week.`,
+          );
+        } else {
+          insights.push("💬 Log your mood daily to see trends and insights.");
+        }
+
+        // Streak insight
+        if (user.streak.current >= 7) {
+          insights.push(
+            `🔥 You have a ${user.streak.current}-day streak! You\'re on fire!`,
+          );
+        } else if (user.streak.current >= 3) {
+          insights.push(
+            `🔥 Keep your ${user.streak.current}-day streak alive!`,
+          );
+        } else {
+          insights.push("💪 Start a streak today! Even 1 day is a win.");
+        }
+
+        return insights;
       }
 
-      // Mood insight
-      if (Object.keys(moodCounts).length > 0) {
-        const mostFrequentMood = Object.entries(moodCounts).sort((a, b) => b[1] - a[1])[0];
-        insights.push(`💬 You felt ${mostFrequentMood[0]} most frequently this week.`);
-      } else {
-        insights.push('💬 Log your mood daily to see trends and insights.');
-      }
-
-      // Streak insight
-      if (user.streak.current >= 7) {
-        insights.push(`🔥 You have a ${user.streak.current}-day streak! You\'re on fire!`);
-      } else if (user.streak.current >= 3) {
-        insights.push(`🔥 Keep your ${user.streak.current}-day streak alive!`);
-      } else {
-        insights.push('💪 Start a streak today! Even 1 day is a win.');
-      }
-
-      return insights;
-    }
-
-    window.addEventListener('load', () => {
-      initProgress();
-      DataManager.applyTheme();
-    });
-  </script>
-
-</body>
+      window.addEventListener("load", () => {
+        initProgress();
+        DataManager.applyTheme();
+      });
+    </script>
+  </body>
 </html>
