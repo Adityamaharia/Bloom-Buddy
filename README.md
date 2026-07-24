@@ -68,7 +68,6 @@ https://bloom-buddy-ashy.vercel.app/
 ### 🎨 Customization
 
 * Choose plant type 🌱🌸🌵
-* Select pot style 🪴
 * Change background theme 🌞🌙🌧️
 
 ### ⚙️ Settings
@@ -134,7 +133,6 @@ All data is stored locally in the browser using `localStorage`.
 ## ⚠️ Note
 
 This project was built with the help of AI tools.
-I focused on designing the concept, user experience, and application logic, and I understand the core implementation.
 
 ---
 
