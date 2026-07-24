@@ -102,27 +102,6 @@ All data is stored locally in the browser using `localStorage`.
 
 ---
 
-## 📸 Screenshots
-
-## 📸 App Preview
-
-### 🏠 Dashboard
-![Dashboard](assets/screenshots/dashboard.png)
-
-### 🎯 Goals
-![Goals](assets/screenshots/goals.png)
-
-### 🎨 Customization (Themes & Plant Selection)
-![Customization](assets/screenshots/customize.png)
-
-### 📊 Progress
-![Progress](assets/screenshots/progress.png)
-
-### ⚙️ Settings
-![Settings](assets/screenshots/settings.png)
-
----
-
 ## ▶️ How to Run
 
 1. Clone the repository
